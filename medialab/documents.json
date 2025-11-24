@@ -1,0 +1,35 @@
+[
+  {
+    "documentId": "DOC-101",
+    "title": "Introduction to JavaFX GUI",
+    "authorName": "Chris Papadopoulos",
+    "categoryId": 1,
+    "latestVersion": 2,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2025-01-20T10:00:00",
+        "content": "This is the initial text about JavaFX. We will explore FXML here.\n\nParagraph 2: Initial thoughts."
+      },
+      {
+        "versionNumber": 2,
+        "creationDate": "2025-11-19T14:30:00",
+        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules."
+      }
+    ]
+  },
+  {
+    "documentId": "DOC-205",
+    "title": "TCP/IP Handshake Explained",
+    "authorName": "medialab",
+    "categoryId": 2,
+    "latestVersion": 1,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2025-10-05T11:00:00",
+        "content": "The three-way handshake: SYN, SYN-ACK, ACK. Critical for reliable communication."
+      }
+    ]
+  }
+]

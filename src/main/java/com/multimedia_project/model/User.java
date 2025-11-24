@@ -1,0 +1,32 @@
+package com.multimedia_project.model;
+
+import java.util.List;
+
+public class User {
+    private String username;
+    private String password; // Θα έπρεπε να είναι hashed στην πραγματικότητα
+    private String firstName;
+    private String lastName;
+    private Role role;
+    private List<Integer> accessCategoryIds;
+
+    // Constructor, Getters και Setters
+    public User(String username, String password, String firstName, String lastName, Role role, List<Integer> accessCategoryIds) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
+        this.accessCategoryIds = accessCategoryIds;
+    }
+
+    public String getUsername() { return username; }
+    public String getPassword() { return password; }
+    public Role getRole() { return role; }
+    public List<Integer> getAccessCategoryIds() { return accessCategoryIds; }
+
+    // Μέθοδος για έλεγχο δικαιωμάτων
+    public boolean canAccessCategory(int categoryId) {
+        return accessCategoryIds.contains(categoryId);
+    }
+}

@@ -1,0 +1,14 @@
+{
+  "simple_user": [
+    {
+      "documentId": "DOC-101",
+      "versionAtFollow": 1 
+    }
+  ],
+  "author_user": [
+    {
+      "documentId": "DOC-205",
+      "versionAtFollow": 1
+    }
+  ]
+}
