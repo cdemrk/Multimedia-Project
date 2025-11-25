@@ -91,4 +91,11 @@ public class DocumentManager {
     public List<Document> getAllDocuments() {
         return documents;
     }
+
+    public Document getDocumentById(String documentId) {
+        return documents.stream()
+                .filter(d -> d.getDocumentId().equals(documentId))
+                .findFirst()
+                .orElse(null);
+    }
 }

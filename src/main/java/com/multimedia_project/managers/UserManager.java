@@ -24,11 +24,11 @@ public class UserManager {
         ));
     }
 
-    // Μέθοδος για το login
-    public Optional<User> authenticate(String username, String password) {
+    public User authenticate(String username, String password) {
         return users.stream()
             .filter(u -> u.getUsername().equals(username) && u.getPassword().equals(password))
-            .findFirst();
+            .findFirst()
+            .orElse(null); // Επιστρέφουμε null αν δεν βρεθεί
     }
 
     public void addUser(String username, String password, String firstName, String lastName, Role role, List<Integer> accessIds) {
@@ -53,6 +53,28 @@ public class UserManager {
     // [ΝΕΑ ΜΕΘΟΔΟΣ] Επιστρέφει όλους τους χρήστες για αποθήκευση στο JSON
     public List<User> getAllUsers() {
         return users;
+    }
+
+
+    /**
+     * Διαγράφει έναν χρήστη από το σύστημα βάσει του username.
+     */
+    public boolean deleteUser(String username) {
+        if (username.equals("medialab")) {
+            // Αποτροπή διαγραφής του προεπιλεγμένου Admin
+            System.err.println("Cannot delete default system administrator.");
+            return false;
+        }
+
+        // Η removeIf αφαιρεί τον χρήστη από τη λίστα αν το predicate είναι true
+        boolean wasDeleted = users.removeIf(u -> u.getUsername().equalsIgnoreCase(username));
+
+        // ΣΗΜΑΝΤΙΚΟ:
+        // Αν ο διαγραφόμενος χρήστης ήταν Συγγραφέας, ίσως χρειαστείτε λογική
+        // για την ανάθεση των εγγράφων του σε άλλο χρήστη (αν και δεν ζητείται ρητά).
+        // Για την απλότητα της εκφώνησης, απλά διαγράφουμε τον χρήστη.
+
+        return wasDeleted;
     }
 
     // ... Άλλες μέθοδοι: deleteUser(), findUserByUsername(), getAllUsers() ...

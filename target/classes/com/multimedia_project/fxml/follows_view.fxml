@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="15.0" xmlns="http://javafx.com/javafx/21" 
+      xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.multimedia_project.gui.FollowsController">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+
+    <Label text="Document Following Management" style="-fx-font-weight: bold;">
+        <font><Font size="16.0" /></font>
+    </Label>
+    
+    <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">
+        
+        <VBox spacing="10.0">
+            <Label text="Available Documents (Not Following)" style="-fx-font-weight: bold;" />
+            <ListView fx:id="availableDocumentsListView" VBox.vgrow="ALWAYS" />
+            <Button fx:id="addFollowButton" text="Start Tracking Selected Document" onAction="#handleAddFollow" style="-fx-base: #4CAF50;" prefWidth="300.0" />
+        </VBox>
+        
+        <VBox spacing="10.0">
+            <Label text="Currently Followed Documents" style="-fx-font-weight: bold;" />
+            <ListView fx:id="followedDocumentsListView" VBox.vgrow="ALWAYS" />
+            <Button fx:id="removeFollowButton" text="Stop Tracking Selected Document" onAction="#handleRemoveFollow" style="-fx-base: #FFC107;" prefWidth="300.0" />
+        </VBox>
+        
+    </SplitPane>
+</VBox>

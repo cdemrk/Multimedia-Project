@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+<?import java.lang.Double?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
+            prefHeight="700.0" prefWidth="1000.0" 
+            xmlns="http://javafx.com/javafx/21" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.multimedia_project.gui.MainController">
+    
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+
+    <center>
+        <SplitPane dividerPositions="0.25" focusTraversable="true" BorderPane.alignment="CENTER">
+            
+            <VBox fx:id="summaryPanel" spacing="15.0">
+                <padding>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </padding>
+                
+                <Label text="System Summary">
+                    <font>
+                        <Font name="System Bold" size="16.0" />
+                    </font>
+                </Label>
+                
+                <Separator />
+                
+                <HBox spacing="10.0">
+                    <Label text="Total Categories:" HBox.hgrow="ALWAYS" />
+                    <Label fx:id="totalCategoriesLabel" text="0" />
+                </HBox>
+                
+                <HBox spacing="10.0">
+                    <Label text="Total Documents:" HBox.hgrow="ALWAYS" />
+                    <Label fx:id="totalDocumentsLabel" text="0" />
+                </HBox>
+                
+                <HBox spacing="10.0">
+                    <Label text="Documents Following:" HBox.hgrow="ALWAYS" />
+                    <Label fx:id="userFollowsLabel" text="0" />
+                </HBox>
+
+                <Separator />
+                
+                <Label fx:id="userRoleLabel" text="Role: N/A" />
+                
+            </VBox>
+            
+            <VBox fx:id="contentPanel">
+                <TabPane fx:id="mainTabPane" side="TOP" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                    
+                    <Tab text="Document Search">
+                        <content>
+                            <VBox fx:id="searchTabContent" />
+                        </content>
+                    </Tab>
+                    
+                    <Tab text="Document View/Management">
+                         <content>
+                            <VBox fx:id="documentTabContent" />
+                        </content>
+                    </Tab>
+                    
+                    <Tab text="Document Following">
+                        <content>
+                            <VBox fx:id="followsTabContent" />
+                        </content>
+                    </Tab>
+                    
+                    <Tab fx:id="userManagementTab" text="User Management">
+                        <content>
+                            <VBox fx:id="userTabContent" /> 
+                        </content>
+                    </Tab>
+                    
+                    <Tab fx:id="categoryManagementTab" text="Category Management">
+                         <content>
+                            <VBox fx:id="categoryTabContent" /> 
+                        </content>
+                    </Tab>
+                    
+                </TabPane>
+            </VBox>
+            
+        </SplitPane>
+    </center>
+    
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
+            <Button text="Logout" onAction="#handleLogout" />
+        </HBox>
+    </bottom>
+    
+</BorderPane>

@@ -2,13 +2,13 @@
   "simple_user": [
     {
       "documentId": "DOC-101",
-      "versionAtFollow": 1 
+      "versionAtFollow": 1
     }
   ],
-  "author_user": [
+  "medialab": [
     {
-      "documentId": "DOC-205",
-      "versionAtFollow": 1
+      "documentId": "DOC-101",
+      "versionAtFollow": 3
     }
   ]
 }

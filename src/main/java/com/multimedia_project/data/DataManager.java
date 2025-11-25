@@ -2,31 +2,37 @@ package com.multimedia_project.data;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.medialab.documents.managers.SystemState;
+import com.multimedia_project.managers.SystemState;
+import com.multimedia_project.model.Category;
+import com.multimedia_project.model.Document;
+import com.multimedia_project.model.User;
+import com.multimedia_project.model.FollowEntry;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.lang.reflect.Type;
 
-// Helper classes for Gson deserialization (χρειάζονται για να διαβάσει σωστά τις λίστες)
-// ... (πρέπει να ορίσετε TypeTokens για κάθε λίστα π.χ. List<User>) ...
 
 public class DataManager {
-    // Το όνομα του φακέλου (απαιτείται από την εκφώνηση)
-    private static final String DATA_FOLDER = "medialab";
-    
-    // Τα ονόματα των αρχείων
+    private static final String DATA_FOLDER = "medialab"; // όνομα του φακέλου
+       
+    // ονόματα των αρχείων
     private static final String USERS_FILE = DATA_FOLDER + File.separator + "users.json";
     private static final String DOCUMENTS_FILE = DATA_FOLDER + File.separator + "documents.json";
     private static final String CATEGORIES_FILE = DATA_FOLDER + File.separator + "categories.json";
     private static final String FOLLOWS_FILE = DATA_FOLDER + File.separator + "follows.json";
 
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final Gson gson = new GsonBuilder()
+                                .setPrettyPrinting()
+                                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                                .create();
 
     public DataManager() {
-        // Βεβαιωθείτε ότι ο φάκελος υπάρχει
+        // Δημιουργία φακέλου 'medialab' αν δεν υπάρχει
         try {
             Files.createDirectories(Paths.get(DATA_FOLDER));
         } catch (IOException e) {
@@ -36,98 +42,8 @@ public class DataManager {
 
     /**
      * Φορτώνει την κατάσταση του συστήματος από τα JSON αρχεία.
-     * Καλή πρακτική: η μέθοδος αυτή θα καλείται κατά την αρχικοποίηση της εφαρμογής.
+     * Η μέθοδος αυτή θα καλείται κατά την αρχικοποίηση της εφαρμογής.
      */
-    public void loadState(SystemState state) {
-        // 1. Φόρτωση Χρηστών
-        try (Reader reader = new FileReader(USERS_FILE)) {
-            // Χρειάζεται Type Token για σωστή ανάγνωση λίστας
-            // state.getUserManager().setUsers(gson.fromJson(reader, /* Type Token List<User> */));
-            // Προσοχή: Εδώ χρειάζεται ειδική μεταχείριση για τον προεπιλεγμένο Admin.
-            System.out.println("Users loaded."); 
-        } catch (FileNotFoundException e) {
-            System.out.println("Users file not found. Using default admin.");
-        } catch (IOException e) {
-            System.err.println("Error reading users: " + e.getMessage());
-        }
-        
-        // ... Επανάληψη της λογικής για CATEGORIES, DOCUMENTS και FOLLOWS ...
-        
-    }
-
-    /**
-     * Αποθηκεύει την κατάσταση του συστήματος στα JSON αρχεία.
-     * **ΣΗΜΑΝΤΙΚΟ:** Αυτή η μέθοδος καλείται ΑΠΟΚΛΕΙΣΤΙΚΑ πριν τον τερματισμό.
-     */
-    public void saveState(SystemState state) {
-        // 1. Αποθήκευση Χρηστών
-        try (Writer writer = new FileWriter(USERS_FILE)) {
-            // Χρησιμοποιήστε τα δεδομένα από τον UserManager της SystemState
-            // gson.toJson(state.getUserManager().getAllUsers(), writer);
-            System.out.println("Users saved successfully.");
-        } catch (IOException e) {
-            System.err.println("Error writing users: " + e.getMessage());
-        }
-
-        // ... Επανάληψη της λογικής για CATEGORIES, DOCUMENTS και FOLLOWS ...
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-package com.medialab.project.data;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.medialab.project.managers.SystemState;
-import com.medialab.project.model.Category;
-import com.medialab.project.model.Document;
-import com.medialab.project.model.User;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-public class DataManager {
-    private static final String DATA_FOLDER = "medialab";
-    private static final String USERS_FILE = DATA_FOLDER + File.separator + "users.json";
-    private static final String DOCUMENTS_FILE = DATA_FOLDER + File.separator + "documents.json";
-    private static final String CATEGORIES_FILE = DATA_FOLDER + File.separator + "categories.json";
-    private static final String FOLLOWS_FILE = DATA_FOLDER + File.separator + "follows.json";
-
-    // Χρησιμοποιούμε GsonBuilder για μορφοποιημένο JSON (pretty printing)
-    private final Gson gson = new GsonBuilder()
-                                .setPrettyPrinting()
-                                .create();
-
-    public DataManager() {
-        // Δημιουργία φακέλου 'medialab' αν δεν υπάρχει
-        try {
-            Files.createDirectories(Paths.get(DATA_FOLDER));
-        } catch (IOException e) {
-            System.err.println("Fatal: Could not create data directory: " + DATA_FOLDER);
-        }
-    }
-
     public void loadState(SystemState state) {
         // 1. Φόρτωση Χρηστών
         List<User> loadedUsers = loadFile(USERS_FILE, TypeTokens.USER_LIST_TYPE);
@@ -153,6 +69,10 @@ public class DataManager {
         state.getFollowManager().setUserFollows(loadedFollows); 
     }
 
+    /**
+     * Αποθηκεύει την κατάσταση του συστήματος στα JSON αρχεία.
+     * Αυτή η μέθοδος καλείται ΑΠΟΚΛΕΙΣΤΙΚΑ πριν τον τερματισμό.
+     */
     public void saveState(SystemState state) {
         // Αποθήκευση της τρέχουσας κατάστασης (in-memory) πριν τον τερματισμό
         saveFile(USERS_FILE, state.getUserManager().getAllUsers());

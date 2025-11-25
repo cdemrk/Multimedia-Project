@@ -1,19 +1,8 @@
 package com.multimedia_project.gui;
 
-public class LoginController {
-    
-}
-
-
-
-
-
-
-package com.medialab.project.gui;
-
-import com.medialab.project.MainApp;
-import com.medialab.project.managers.SystemState;
-import com.medialab.project.model.User;
+import com.multimedia_project.MainApp;
+import com.multimedia_project.managers.SystemState;
+import com.multimedia_project.model.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
@@ -35,16 +24,15 @@ public class LoginController {
     }
     
     @FXML
-    private void handleLoginButton() {
+    private void handleLogin() {
         String username = usernameField.getText();
         String password = passwordField.getText();
         
-        // 1. Έλεγχος Αυθεντικοποίησης
-        Optional<User> userOpt = systemState.getUserManager().authenticate(username, password);
+        // Έλεγχος Αυθεντικοποίησης
+        User loggedInUser = systemState.getUserManager().authenticate(username, password);
         
-        if (userOpt.isPresent()) {
-            User loggedInUser = userOpt.get();
-            System.out.println("Login successful for user: " + loggedInUser.getUsername());
+        if (loggedInUser != null){
+            System.out.println("Login successful for user: " + loggedInUser.getUsername()); // ΕΠΙΤΥΧΙΑ: Φόρτωση Main View
             
             try {
                 // 2. Φόρτωση Κεντρικού Παραθύρου

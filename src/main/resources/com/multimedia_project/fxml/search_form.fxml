@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import java.lang.*?>
+
+<VBox spacing="15.0" xmlns="http://javafx.com/javafx/21" 
+      xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.multimedia_project.gui.DocumentSearchController">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+
+    <Label text="Document Search Criteria" style="-fx-font-weight: bold;" />
+
+    <GridPane hgap="10" vgap="10">
+        <Label text="Category:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <ComboBox fx:id="categoryCombo" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+        <Label text="Title Contains:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField fx:id="titleField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <Label text="Author Contains:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <TextField fx:id="authorField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+    </GridPane>
+
+    <Button text="Search Documents" onAction="#handleSearch" style="-fx-base: #4CAF50;" />
+
+    <Separator />
+
+    <Label text="Search Results" style="-fx-font-weight: bold;" />
+    
+    <TableView fx:id="resultsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="titleColumn" text="Title" prefWidth="250.0" />
+            <TableColumn fx:id="authorColumn" text="Author" prefWidth="150.0" />
+            <TableColumn fx:id="categoryColumn" text="Category" prefWidth="150.0" />
+            <TableColumn fx:id="dateColumn" text="Creation Date" prefWidth="120.0" />
+            <TableColumn fx:id="versionColumn" text="Version" prefWidth="60.0" />
+        </columns>
+    </TableView>
+
+</VBox>

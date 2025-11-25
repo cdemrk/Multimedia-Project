@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 
-
 public class CategoryManager {
     private List<Category> categories;
     private int nextCategoryId = 1;
@@ -74,5 +73,14 @@ public class CategoryManager {
                     .max().orElse(0) + 1;
             }
         }
+    }
+
+
+    public String getCategoryNameById(int id) {
+        return categories.stream()
+                .filter(c -> c.getId() == id)
+                .map(Category::getName)
+                .findFirst()
+                .orElse("N/A");
     }
 }

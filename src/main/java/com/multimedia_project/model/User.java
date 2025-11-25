@@ -22,11 +22,22 @@ public class User {
 
     public String getUsername() { return username; }
     public String getPassword() { return password; }
+    public String getFirstName() { return firstName; }
+    public String getLastName() { return lastName; }
     public Role getRole() { return role; }
     public List<Integer> getAccessCategoryIds() { return accessCategoryIds; }
 
     // Μέθοδος για έλεγχο δικαιωμάτων
     public boolean canAccessCategory(int categoryId) {
         return accessCategoryIds.contains(categoryId);
+    }
+
+    @Override
+    public String toString() {
+        // Επιστρέφει το όνομα και το επώνυμο (π.χ. "Chris Papadopoulos")
+        if (firstName != null && lastName != null && !firstName.isEmpty()) {
+            return firstName + " " + lastName + " (" + username + ")";
+        }
+        return username; 
     }
 }

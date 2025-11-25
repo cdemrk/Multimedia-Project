@@ -58,4 +58,9 @@ public class Document {
             return versions.subList(startIndex, size);
         }
     }
+
+    @Override
+    public String toString() {
+        return this.title;
+    }
 }

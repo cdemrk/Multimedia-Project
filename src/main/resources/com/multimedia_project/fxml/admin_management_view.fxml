@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx/21" 
+      xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.multimedia_project.gui.AdminManagementController">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+
+    <SplitPane dividerPositions="0.5" VBox.vgrow="ALWAYS">
+        
+        <VBox spacing="10.0">
+            <Label text="User Management" style="-fx-font-weight: bold; -fx-font-size: 16;" />
+            <Separator />
+            
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                <Label text="Existing Users:" />
+                <Button fx:id="deleteUserButton" text="Delete Selected User" onAction="#handleDeleteUser" style="-fx-base: #d9534f;" />
+            </HBox>
+            
+            <ListView fx:id="userListView" VBox.vgrow="ALWAYS" prefHeight="150" />
+            
+            <Label text="Add New / Selected User Details:" style="-fx-font-weight: bold;" />
+            
+            <GridPane hgap="10" vgap="10">
+                <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <TextField fx:id="userFirstNameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                
+                <Label text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                <TextField fx:id="userLastNameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                <Label text="Username (Required):" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                <TextField fx:id="userUsernameField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                <Label text="Password (Required):" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                <PasswordField fx:id="userPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                <Label text="User Role:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                <ComboBox fx:id="userRoleCombo" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            </GridPane>
+
+            <Label text="Access Categories (Select 1+ Required):" style="-fx-font-weight: bold;" />
+            <ListView fx:id="accessCategoriesListView" VBox.vgrow="ALWAYS" prefHeight="150" />
+
+            <Button text="Add New User" onAction="#handleAddUser" style="-fx-base: #5cb85c;" prefWidth="200.0" />
+            
+        </VBox>
+        
+        <VBox spacing="10.0">
+            <Label text="Category Management" style="-fx-font-weight: bold; -fx-font-size: 16;" />
+            <Separator />
+
+            <Label text="Existing Categories:" />
+            <ListView fx:id="categoryListView" VBox.vgrow="ALWAYS" prefHeight="200" />
+            
+            <Label text="Update Selected Category Name:" style="-fx-font-weight: bold;" />
+            <GridPane hgap="10" vgap="10">
+                <Label text="Current Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <TextField fx:id="currentCategoryNameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <Button fx:id="updateCategoryButton" text="Update Name" onAction="#handleUpdateCategoryName" GridPane.columnIndex="2" GridPane.rowIndex="0" disable="true" />
+            </GridPane>
+            
+            <Button fx:id="deleteCategoryButton" text="Delete Selected Category (and all documents)" onAction="#handleDeleteCategory" style="-fx-base: #d9534f;" disable="true" />
+            
+            <Separator />
+
+            <Label text="Add New Category:" style="-fx-font-weight: bold;" />
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                <TextField fx:id="newCategoryNameField" promptText="Enter New Category Name" HBox.hgrow="ALWAYS" />
+                <Button text="Add Category" onAction="#handleAddCategory" style="-fx-base: #5cb85c;" />
+            </HBox>
+        </VBox>
+        
+    </SplitPane>
+</VBox>

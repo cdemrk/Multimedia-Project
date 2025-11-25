@@ -1,10 +1,10 @@
 package com.multimedia_project.data;
 
 import com.google.gson.reflect.TypeToken;
-import com.medialab.project.model.Category;
-import com.medialab.project.model.Document;
-import com.medialab.project.model.User;
-import com.medialab.project.managers.FollowEntry; // Ή όπου αλλού έχετε βάλει το FollowEntry
+import com.multimedia_project.model.Category;
+import com.multimedia_project.model.Document;
+import com.multimedia_project.model.User;
+import com.multimedia_project.model.FollowEntry;
 
 import java.lang.reflect.Type;
 import java.util.List;

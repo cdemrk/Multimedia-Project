@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+
+<VBox spacing="10.0" xmlns="http://javafx.com/javafx/21" 
+      xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.multimedia_project.gui.DocumentManagementController">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <Label text="Filter by Category:" />
+        <ComboBox fx:id="categoryFilterCombo" onAction="#filterDocumentsByCategory" prefWidth="200.0" />
+        
+        <Region HBox.hgrow="ALWAYS" />
+        
+        <Button fx:id="newDocumentButton" text="New Document" onAction="#handleNewDocument" style="-fx-base: #5cb85c;" />
+        <Button fx:id="editDocumentButton" text="Edit Content" onAction="#handleEditDocument" />
+        <Button fx:id="deleteDocumentButton" text="Delete Document" onAction="#handleDeleteDocument" style="-fx-base: #d9534f;" />
+    </HBox>
+
+    <SplitPane dividerPositions="0.3" VBox.vgrow="ALWAYS">
+        
+        <ListView fx:id="documentListView" prefWidth="250.0" />
+        
+        <VBox spacing="10.0">
+            <Label text="Document Content" style="-fx-font-weight: bold;">
+                 <font><Font size="16.0" /></font>
+            </Label>
+            
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                <Label text="Select Version:" />
+                <ComboBox fx:id="versionSelectorCombo" onAction="#handleVersionChange" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="versionInfoLabel" text="Version: 1 | Date: N/A" style="-fx-font-style: italic;" />
+            </HBox>
+
+            <TextArea fx:id="contentDisplayArea" editable="false" VBox.vgrow="ALWAYS" wrapText="true" />
+            
+            <HBox alignment="CENTER_RIGHT">
+                <Button fx:id="saveChangesButton" text="Save Changes (New Version)" onAction="#handleSaveChanges" style="-fx-base: #2e649d;" />
+            </HBox>
+        </VBox>
+        
+    </SplitPane>
+</VBox>
