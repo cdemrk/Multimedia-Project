@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="10.0" xmlns="http://javafx.com/javafx/21" 
+      xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.multimedia_project.gui.UserManagementController">
+    <padding>
+        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+    </padding>
+
+    <Label text="User Management" style="-fx-font-weight: bold;">
+        <font><Font size="16.0" /></font>
+    </Label>
+    <Separator />
+    
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <Label text="Existing Users:" style="-fx-font-weight: bold;" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button fx:id="deleteUserButton" text="Delete Selected User" onAction="#handleDeleteUser" style="-fx-base: #d9534f;" />
+    </HBox>
+    
+    <ListView fx:id="userListView" VBox.vgrow="ALWAYS" prefHeight="200" />
+    
+    <Separator />
+    
+    <Label text="Add New User Details:" style="-fx-font-weight: bold;" />
+    
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" prefWidth="150.0" />
+            <ColumnConstraints hgrow="ALWAYS" prefWidth="250.0" />
+        </columnConstraints>
+        
+        <Label text="First Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="userFirstNameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        
+        <Label text="Last Name:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField fx:id="userLastNameField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <Label text="Username (Required):" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <TextField fx:id="userUsernameField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+        <Label text="Password (Required):" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <PasswordField fx:id="userPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+        <Label text="User Role:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <ComboBox fx:id="userRoleCombo" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+    </GridPane>
+
+    <Label text="Access Categories (Select 1+):" style="-fx-font-weight: bold;" />
+    
+    <ListView fx:id="accessCategoriesListView" prefHeight="150" /> 
+    <Button text="Add New User" onAction="#handleAddUser" style="-fx-base: #5cb85c;" prefWidth="200.0" />
+    
+</VBox>

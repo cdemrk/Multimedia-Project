@@ -63,7 +63,9 @@ public class MainController {
     private void checkRolePermissions(Role role) {
         if (role == Role.Admin) {
             // Εάν είναι Admin, φορτώνουμε το Admin View
-            loadAdminManagementView();
+            loadUserManagementView();
+            loadCategoryManagementView();
+
         } else {
             // Εάν ΔΕΝ είναι Admin, αφαιρούμε τις καρτέλες διαχείρισης
             TabPane tabPane = userManagementTab.getTabPane(); 
@@ -128,22 +130,39 @@ public class MainController {
         }
     }
 
-    private void loadAdminManagementView() {
+
+    private void loadUserManagementView() {
         try {
             FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/multimedia_project/fxml/admin_management_view.fxml")
+                getClass().getResource("/com/multimedia_project/fxml/user_management_view.fxml")
             );
+            Node userViewNode = loader.load();
             
-            Node adminViewNode = loader.load();
-            AdminManagementController adminController = loader.getController();
-            adminController.initializeData(systemState, loggedInUser);
-            userTabContent.getChildren().setAll(adminViewNode); 
-            categoryTabContent.getChildren().setAll(adminViewNode); 
+            // 1. Αρχικοποίηση Controller (ΝΕΟΣ ΤΥΠΟΣ)
+            UserManagementController userController = loader.getController();
+            userController.initializeData(systemState, loggedInUser); 
             
-        } catch (IOException e) {
-            System.err.println("Failed to load admin management FXML: " + e.getMessage());
-        }
+            userTabContent.getChildren().setAll(userViewNode); 
+            
+        } catch (IOException e) { /* ... */ }
     }
+
+    private void loadCategoryManagementView() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("/com/multimedia_project/fxml/category_management_view.fxml")
+            );
+            Node categoryViewNode = loader.load();
+            
+            // 1. Αρχικοποίηση Controller (ΝΕΟΣ ΤΥΠΟΣ)
+            CategoryManagementController categoryController = loader.getController();
+            categoryController.initializeData(systemState, loggedInUser); 
+            
+            categoryTabContent.getChildren().setAll(categoryViewNode); 
+            
+        } catch (IOException e) { /* ... */ }
+    }
+ 
 
     // Έλεγχος για νέα έκδοση κατά το Login
     private void checkForNewVersions() {

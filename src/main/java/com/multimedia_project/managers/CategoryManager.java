@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public class CategoryManager {
     private List<Category> categories;
+    private DocumentManager documentManager;
     private int nextCategoryId = 1;
 
 
@@ -45,13 +46,11 @@ public class CategoryManager {
         return false;
     }
 
-    // Διαγραφή κατηγορίας
     public boolean deleteCategory(int id) {
-        // **ΣΗΜΑΝΤΙΚΟ:** Πρέπει να καλέσετε τον DocumentManager για να διαγράψει
-        // όλα τα έγγραφα που ανήκουν σε αυτή την κατηγορία, και στη συνέχεια 
-        // να γίνει η ενημέρωση στον FollowManager.
+        // καλο΄ύμε τον DocumentManager για να διαγράψει όλα τα έγγραφα που ανήκουν σε αυτή την κατηγορία, και στη συνέχεια να γίνει η ενημέρωση στον FollowManager.
+        documentManager.deleteDocumentsByCategory(id);
         
-        // Για την απλότητα του σκελετού, κάνουμε μόνο τη διαγραφή από τη λίστα
+        // 2. Διαγραφή της κατηγορίας
         return categories.removeIf(c -> c.getId() == id);
     }
 
