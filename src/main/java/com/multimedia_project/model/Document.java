@@ -8,6 +8,7 @@ public class Document {
     private String documentId; // Μοναδικό ID
     private String title;
     private String authorName;
+    private int authorId;
     private int categoryId;
     private List<DocumentVersion> versions;
 
@@ -16,13 +17,13 @@ public class Document {
         this.versions = new ArrayList<>();
     }
 
-    public Document(String documentId, String title, String authorName, int categoryId, String initialContent) {
+    public Document(String documentId, String title, int authorId, String authorName, int categoryId) {
         this.documentId = documentId;
         this.title = title;
+        this.authorId = authorId;
         this.authorName = authorName;
         this.categoryId = categoryId;
         this.versions = new ArrayList<>();
-        this.versions.add(new DocumentVersion(1, initialContent)); // Προκαθορισμένος αριθμός έκδοσης V1
     }
 
     // --- Getters and Setters ---
@@ -30,6 +31,7 @@ public class Document {
     public String getTitle() { return title; }
     public String getAuthorName() { return authorName; }
     public int getCategoryId() { return categoryId; }
+    public int getAuthorId() { return authorId; }
     public List<DocumentVersion> getVersions() { return versions; }
 
     // Επιστρέφει την τελευταία έκδοση
@@ -58,6 +60,8 @@ public class Document {
             return versions.subList(startIndex, size);
         }
     }
+
+    public void setAuthorId(int authorId) { this.authorId = authorId; }
 
     @Override
     public String toString() {

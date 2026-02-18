@@ -38,22 +38,46 @@ public class UserManagementController {
     }
     
     private void setupUserManagement() {
-        // [ΛΟΓΙΚΗ ΑΡΧΙΚΟΠΟΙΗΣΗΣ]
+    
+        // 1. Ρύθμιση ComboBox Ρόλου
         userRoleCombo.setItems(FXCollections.observableArrayList(Arrays.asList(Role.SimpleUser, Role.Author, Role.Admin)));
         userRoleCombo.getSelectionModel().selectFirst();
         
+        // 2. Ενεργοποίηση Πολλαπλής Επιλογής (ΑΠΑΡΑΙΤΗΤΟ)
+        // Αυτό είναι απαραίτητο για να λειτουργήσει η custom logic παρακάτω.
         accessCategoriesListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         
-        // Ορίζουμε πώς θα εμφανίζονται οι κατηγορίες (χρειάζεται το toString() στην Category)
-        accessCategoriesListView.setCellFactory(lv -> new ListCell<Category>() {
-            @Override
-            protected void updateItem(Category item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty ? null : item.getName());
-            }
+        // 3. CUSTOM LOGIC: Ενεργοποίηση πολλαπλής επιλογής με απλό κλικ (Toggle)
+        accessCategoriesListView.setCellFactory(lv -> {
+            ListCell<Category> cell = new ListCell<Category>() {
+                @Override
+                protected void updateItem(Category item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item.getName());
+                }
+            };
+
+            // Προσθήκη Listener για το κλικ στο κελί (cell)
+            cell.setOnMouseClicked(event -> {
+                if (!cell.isEmpty()) {
+                    int index = cell.getIndex();
+                    // Εάν το στοιχείο είναι ήδη επιλεγμένο, το αποεπιλέγουμε.
+                    if (accessCategoriesListView.getSelectionModel().isSelected(index)) {
+                        accessCategoriesListView.getSelectionModel().clearSelection(index);
+                    } 
+                    // Αλλιώς, το επιλέγουμε.
+                    else {
+                        accessCategoriesListView.getSelectionModel().select(index);
+                    }
+                    
+                    // Σταματάμε το event για να μην εκτελεστεί η default συμπεριφορά της ListView
+                    event.consume(); 
+                }
+            });
+            return cell;
         });
 
-        // Ακρόαση επιλογής χρήστη
+        // 4. Ακρόαση επιλογής χρήστη (για να γεμίσουμε τη φόρμα)
         userListView.getSelectionModel().selectedItemProperty().addListener(
             (obs, oldVal, newVal) -> populateUserFields(newVal)
         );

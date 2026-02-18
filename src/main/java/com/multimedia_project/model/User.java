@@ -3,6 +3,7 @@ package com.multimedia_project.model;
 import java.util.List;
 
 public class User {
+    private int userid;
     private String username;
     private String password; // Θα έπρεπε να είναι hashed στην πραγματικότητα
     private String firstName;
@@ -20,6 +21,7 @@ public class User {
         this.accessCategoryIds = accessCategoryIds;
     }
 
+    public int getId() { return userid; }
     public String getUsername() { return username; }
     public String getPassword() { return password; }
     public String getFirstName() { return firstName; }

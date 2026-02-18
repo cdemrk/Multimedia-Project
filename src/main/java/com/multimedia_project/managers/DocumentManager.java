@@ -1,6 +1,9 @@
 package com.multimedia_project.managers;
 
 import com.multimedia_project.model.Document;
+import com.multimedia_project.model.DocumentVersion;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,12 +20,25 @@ public class DocumentManager {
         this.followManager = followManager;
     }
 
-    // Δημιουργία νέου εγγράφου
-    public Document createDocument(String title, String authorName, int categoryId, String content) {
-        String documentId = "doc_" + (nextDocumentId++);
-        Document newDoc = new Document(documentId, title, authorName, categoryId, content);
-        documents.add(newDoc);
-        return newDoc;
+
+    public Document createDocument(String title, int categoryId, int authorId, String authorName, String content) {
+        String newId = "DOC_" + (documents.size() + 1);
+        Document doc = new Document(newId, title, authorId, authorName, categoryId);
+        
+        DocumentVersion v1 = new DocumentVersion(1, content, LocalDateTime.now());
+        doc.getVersions().add(v1);
+        
+        documents.add(doc);
+        return doc;
+    }
+
+    public List<Document> searchDocuments(String title, String authorName, Integer categoryId) {
+        return documents.stream()
+            .filter(d -> title == null || title.isEmpty() || d.getTitle().toLowerCase().contains(title.toLowerCase()))
+            // Εδώ χρησιμοποιούμε το d.getAuthorName() που κράτησες
+            .filter(d -> authorName == null || authorName.isEmpty() || d.getAuthorName().toLowerCase().contains(authorName.toLowerCase()))
+            .filter(d -> categoryId == null || d.getCategoryId() == categoryId)
+            .collect(Collectors.toList());
     }
 
     // Τροποποίηση εγγράφου (ενσωματώνει Versioning)
@@ -53,15 +69,7 @@ public class DocumentManager {
         }
         return removed;
     }
-    
-    // Αναζήτηση Εγγράφων
-    public List<Document> searchDocuments(String title, String authorName, Integer categoryId) {
-        return documents.stream()
-            .filter(d -> title == null || d.getTitle().toLowerCase().contains(title.toLowerCase()))
-            .filter(d -> authorName == null || d.getAuthorName().toLowerCase().contains(authorName.toLowerCase()))
-            .filter(d -> categoryId == null || d.getCategoryId() == categoryId)
-            .collect(Collectors.toList());
-    }
+
 
     // Διαγραφή όλων των εγγράφων μιας κατηγορίας (καλείται από CategoryManager)
     public void deleteDocumentsByCategory(int categoryId) {

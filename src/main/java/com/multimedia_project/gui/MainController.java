@@ -4,8 +4,8 @@ import com.multimedia_project.MainApp;
 import com.multimedia_project.managers.SystemState;
 import com.multimedia_project.model.User;
 import com.multimedia_project.model.Role;
-import com.multimedia_project.model.Document; // Υποθέτουμε ότι το Document είναι στο model
-import com.multimedia_project.model.FollowEntry; // Υποθέτουμε ότι το FollowEntry είναι στο model
+import com.multimedia_project.model.Document;
+import com.multimedia_project.model.FollowEntry;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
@@ -13,8 +13,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
@@ -27,195 +25,127 @@ public class MainController {
     @FXML private Label userFollowsLabel;
     @FXML private Label userRoleLabel;
     
-    @FXML private VBox searchTabContent;
     @FXML private VBox documentTabContent;
     @FXML private VBox followsTabContent;
-    
     @FXML private VBox userTabContent;
     @FXML private VBox categoryTabContent;
+
     @FXML private Tab userManagementTab;
     @FXML private Tab categoryManagementTab;
+    @FXML private TabPane mainTabPane;
 
     private SystemState systemState;
     private User loggedInUser;
 
-    // Καθορίζει την κατάσταση και τον συνδεδεμένο χρήστη
     public void initializeData(SystemState state, User user) {
         this.systemState = state;
         this.loggedInUser = user;
 
         userRoleLabel.setText("Role: " + user.getRole().toString());
 
-        // Φόρτωση όλων των κοινών Views
-        loadSearchForm(); 
-        loadDocumentManagementView();
+        // 1. Έλεγχος δικαιωμάτων για τα Tabs
+        if (user.getRole() != Role.Admin) {
+            mainTabPane.getTabs().remove(userManagementTab);
+            mainTabPane.getTabs().remove(categoryManagementTab);
+        }
+
+        // 2. Φόρτωση των Views με τα σωστά paths
+        loadUnifiedDocumentView();
         loadFollowsView();
+        
+        if (user.getRole() == Role.Admin) {
+            loadUserManagementView();
+            loadCategoryManagementView();
+        }
 
-        // φόρτωση views ανάλογα με ρόλο του χρήστη
-        checkRolePermissions(user.getRole());
-
-        // Ενημέρωση και Ειδοποιήσεις
         updateSummaryLabels();
         checkForNewVersions(); 
     }
 
-
-    private void checkRolePermissions(Role role) {
-        if (role == Role.Admin) {
-            // Εάν είναι Admin, φορτώνουμε το Admin View
-            loadUserManagementView();
-            loadCategoryManagementView();
-
-        } else {
-            // Εάν ΔΕΝ είναι Admin, αφαιρούμε τις καρτέλες διαχείρισης
-            TabPane tabPane = userManagementTab.getTabPane(); 
-            if (tabPane != null) {
-                tabPane.getTabs().remove(userManagementTab);
-                tabPane.getTabs().remove(categoryManagementTab);
-            }
-        }
-    }
-
-
-    private void loadSearchForm() {
+    private void loadUnifiedDocumentView() {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/multimedia_project/fxml/search_form.fxml")
-            );
+            // ΔΙΟΡΘΩΜΕΝΟ PATH
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/multimedia_project/fxml/UnifiedDocumentView.fxml"));
+            Node node = loader.load();
             
-            Node searchFormNode = loader.load();
-            DocumentSearchController searchController = loader.getController();
-            searchController.initializeData(systemState, loggedInUser);
-            searchTabContent.getChildren().setAll(searchFormNode);
+            UnifiedDocumentController controller = loader.getController();
+            controller.initializeData(systemState, loggedInUser);
+            controller.setMainController(this); 
             
+            documentTabContent.getChildren().setAll(node);
         } catch (IOException e) {
-            System.err.println("Failed to load search form FXML: " + e.getMessage());
+            System.err.println("Error loading UnifiedDocumentView: " + e.getMessage());
             e.printStackTrace();
-            searchTabContent.getChildren().setAll(new Label("Error loading search form."));
-        }
-    }
-
-
-    private void loadDocumentManagementView() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/multimedia_project/fxml/document_management_view.fxml")
-            );
-            
-            Node documentViewNode = loader.load();
-            DocumentManagementController docController = loader.getController();
-            docController.initializeData(systemState, loggedInUser);
-            documentTabContent.getChildren().setAll(documentViewNode);
-            
-        } catch (IOException e) {
-            System.err.println("Failed to load document management FXML: " + e.getMessage());
-            documentTabContent.getChildren().setAll(new Label("Error loading document view."));
         }
     }
 
     private void loadFollowsView() {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/multimedia_project/fxml/follows_view.fxml")
-            );
-
-            Node followsViewNode = loader.load();
-            FollowsController followsController = loader.getController();
-            followsController.initializeData(systemState, loggedInUser);
-            followsTabContent.getChildren().setAll(followsViewNode);
-
+            // ΔΙΟΡΘΩΜΕΝΟ PATH (Εδώ χτυπούσε το σφάλμα στη γραμμή 91)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/multimedia_project/fxml/follows_view.fxml"));
+            Node node = loader.load();
+            
+            FollowsController controller = loader.getController();
+            controller.initializeData(systemState, loggedInUser);
+            
+            followsTabContent.getChildren().setAll(node);
         } catch (IOException e) {
-            System.err.println("Failed to load follows management FXML: " + e.getMessage());
-            followsTabContent.getChildren().setAll(new Label("Error loading follows view."));
+            System.err.println("Error loading follows_view: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-
     private void loadUserManagementView() {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/multimedia_project/fxml/user_management_view.fxml")
-            );
-            Node userViewNode = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/multimedia_project/fxml/user_management_view.fxml"));
+            Node node = loader.load();
             
-            // 1. Αρχικοποίηση Controller (ΝΕΟΣ ΤΥΠΟΣ)
-            UserManagementController userController = loader.getController();
-            userController.initializeData(systemState, loggedInUser); 
+            UserManagementController controller = loader.getController();
+            controller.initializeData(systemState, loggedInUser);
             
-            userTabContent.getChildren().setAll(userViewNode); 
-            
-        } catch (IOException e) { /* ... */ }
+            userTabContent.getChildren().setAll(node);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadCategoryManagementView() {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/com/multimedia_project/fxml/category_management_view.fxml")
-            );
-            Node categoryViewNode = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/multimedia_project/fxml/category_management_view.fxml"));
+            Node node = loader.load();
             
-            // 1. Αρχικοποίηση Controller (ΝΕΟΣ ΤΥΠΟΣ)
-            CategoryManagementController categoryController = loader.getController();
-            categoryController.initializeData(systemState, loggedInUser); 
+            CategoryManagementController controller = loader.getController();
+            controller.initializeData(systemState, loggedInUser);
+            controller.setMainController(this); 
             
-            categoryTabContent.getChildren().setAll(categoryViewNode); 
-            
-        } catch (IOException e) { /* ... */ }
+            categoryTabContent.getChildren().setAll(node);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
- 
 
-    // Έλεγχος για νέα έκδοση κατά το Login
     private void checkForNewVersions() {
         if (loggedInUser == null) return;
-        
         List<FollowEntry> userFollows = systemState.getFollowManager().getFollowsForUser(loggedInUser.getUsername());
-        if (userFollows.isEmpty()) return;
-
-        StringBuilder notificationMessage = new StringBuilder();
         
-        // Λίστα για τα FollowEntry που θα ενημερωθούν IN-MEMORY, δηλαδή αυτά για τα οποία ο χρήστης ειδοποιήθηκε
-        List<FollowEntry> updatedFollows = new java.util.ArrayList<>(); 
+        StringBuilder message = new StringBuilder();
+        boolean found = false;
 
         for (FollowEntry entry : userFollows) {
             Document doc = systemState.getDocumentManager().getDocumentById(entry.getDocumentId());
-            
-            if (doc != null) {
-                int latestVersion = doc.getLatestVersion().getVersionNumber();
-                
-                if (entry.hasNewVersion(latestVersion)) {
-                    // Υπάρχει νέα έκδοση!
-                    notificationMessage.append("- Document: ").append(doc.getTitle())
-                                       .append(" has new version ").append(latestVersion)
-                                       .append("\n");
-                    
-                    // Σημαδεύουμε για ενημέρωση (in-memory)
-                    updatedFollows.add(entry);
-                }
+            if (doc != null && doc.getLatestVersion().getVersionNumber() > entry.getVersionAtFollow()) {
+                message.append("- ").append(doc.getTitle()).append("\n");
+                entry.setVersionAtFollow(doc.getLatestVersion().getVersionNumber());
+                found = true;
             }
         }
         
-        if (notificationMessage.length() > 0) {
-            showAlert("Document Updates", 
-                      "The following documents you are tracking have new versions:\n\n" + notificationMessage.toString(), 
-                      Alert.AlertType.INFORMATION);
-            
-            // Καταγράφουμε ότι ο χρήστης είδε την τελευταία έκδοση in memory
-            updateFollowsInMemory(updatedFollows);
-        }
-    }
-    
-    // Ενημερώνει το versionAtFollow για να μην ξαναβγεί το popup. Αυτή η αλλαγή θα αποθηκευτεί στο JSON ΜΟΝΟ κατά τον ΤΕΡΜΑΤΙΣΜΟ.
-    private void updateFollowsInMemory(List<FollowEntry> followsToUpdate) {
-        for (FollowEntry entry : followsToUpdate) {
-            Document doc = systemState.getDocumentManager().getDocumentById(entry.getDocumentId());
-            if (doc != null) {
-                entry.setVersionAtFollow(doc.getLatestVersion().getVersionNumber());
-            }
+        if (found) {
+            showAlert("Updates", "New versions found for:\n" + message.toString(), Alert.AlertType.INFORMATION);
         }
     }
 
-    // Ενημέρωση των Συγκεντρωτικών Πληροφοριών
-    private void updateSummaryLabels() {
+    public void updateSummaryLabels() {
         int totalCategories = systemState.getCategoryManager().getAllCategories().size();
         int totalDocuments = systemState.getDocumentManager().getAllDocuments().size();
         int userFollowsCount = systemState.getFollowManager().getFollowsForUser(loggedInUser.getUsername()).size();
@@ -225,11 +155,10 @@ public class MainController {
         userFollowsLabel.setText(String.valueOf(userFollowsCount));
     }
 
-
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
-        alert.setHeaderText("New Document Versions Available!");
+        alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
@@ -237,10 +166,9 @@ public class MainController {
     @FXML
     private void handleLogout() {
         try {
-            // Επαναφορά στην οθόνη σύνδεσης
             MainApp.showLoginView();
         } catch (IOException e) {
-            showAlert("Error", "Could not return to login view.", Alert.AlertType.ERROR);
+            e.printStackTrace();
         }
     }
 }

@@ -1,5 +1,6 @@
 [
   {
+    "userid": 1,
     "username": "medialab",
     "password": "medialab_2025",
     "firstName": "Default",
@@ -12,6 +13,7 @@
     ]
   },
   {
+    "userid": 2,
     "username": "author_user",
     "password": "author_pass",
     "firstName": "Despoina",
@@ -23,16 +25,18 @@
     ]
   },
   {
+    "userid": 3,
     "username": "simple_user",
     "password": "simple_pass",
     "firstName": "Christina",
     "lastName": "Pappa",
     "role": "SimpleUser",
     "accessCategoryIds": [
-      2
+      1
     ]
   },
   {
+    "userid": 3,
     "username": "Christina",
     "password": "Pappa",
     "firstName": "simple_user",
@@ -40,6 +44,28 @@
     "role": "SimpleUser",
     "accessCategoryIds": [
       2
+    ]
+  },
+  {
+    "userid": 4,
+    "username": "simple",
+    "password": "user",
+    "firstName": "simple",
+    "lastName": "123",
+    "role": "Author",
+    "accessCategoryIds": [
+      2
+    ]
+  },
+  {
+    "userid": 5,
+    "username": "admin",
+    "password": "123",
+    "firstName": "simple",
+    "lastName": "hello",
+    "role": "Admin",
+    "accessCategoryIds": [
+      1
     ]
   }
 ]

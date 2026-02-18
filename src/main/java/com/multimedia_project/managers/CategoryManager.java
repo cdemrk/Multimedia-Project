@@ -18,6 +18,10 @@ public class CategoryManager {
         // You'll load this from JSON in the final app
     }
 
+    public void setDocumentManager(DocumentManager documentManager) {
+        this.documentManager = documentManager;
+    }
+
     // Προσθήκη νέας κατηγορίας
     public Category addCategory(String name) {
         // Έλεγχος για ύπαρξη ονόματος

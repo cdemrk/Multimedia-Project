@@ -2,7 +2,8 @@
   {
     "documentId": "DOC-101",
     "title": "Introduction to JavaFX GUI",
-    "authorName": "Chris Papadopoulos",
+    "authorName": "Despoina Markatou",
+    "authorId": 2,
     "categoryId": 1,
     "versions": [
       {
@@ -19,6 +20,129 @@
         "versionNumber": 3,
         "creationDate": "2025-11-25T23:12:47.371922",
         "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nNewwww"
+      },
+      {
+        "versionNumber": 4,
+        "creationDate": "2025-11-25T23:27:08.0579497",
+        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nNew\nNew"
+      },
+      {
+        "versionNumber": 5,
+        "creationDate": "2026-02-17T12:41:00.2152027",
+        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nNew\nNe"
+      },
+      {
+        "versionNumber": 6,
+        "creationDate": "2026-02-18T01:10:56.2996508",
+        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nversion 5"
+      }
+    ]
+  },
+  {
+    "documentId": "DOC-102",
+    "title": "React Tutorial for Beginners",
+    "authorName": "Despoina Markatou",
+    "authorId": 2,
+    "categoryId": 3,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2026-02-16T12:00:00",
+        "content": "Welcome to React! In this doc we explain components and hooks."
+      }
+    ]
+  },
+  {
+    "documentId": "DOC-104",
+    "title": "Advanced Python Tips",
+    "authorName": "Despoina Markatou",
+    "authorId": 2,
+    "categoryId": 3,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2026-02-16T16:00:00",
+        "content": "Deep dive into decorators, generators, and context managers."
+      }
+    ]
+  },
+  {
+    "documentId": "DOC-105",
+    "title": "SQL Optimization Guide",
+    "authorName": "simple",
+    "authorId": 4,
+    "categoryId": 3,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2026-02-16T16:15:00",
+        "content": "How to use indexes and explain plans to speed up your queries."
+      }
+    ]
+  },
+  {
+    "documentId": "DOC_6",
+    "title": "New doc",
+    "authorName": "author_user",
+    "authorId": 2,
+    "categoryId": 3,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2026-02-17T17:40:43.4949459",
+        "content": "Initial content..."
+      },
+      {
+        "versionNumber": 2,
+        "creationDate": "2026-02-17T17:41:10.5560615",
+        "content": "hello"
+      }
+    ]
+  },
+  {
+    "documentId": "DOC_7",
+    "title": "programming",
+    "authorName": "author_user",
+    "authorId": 2,
+    "categoryId": 1,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2026-02-17T21:18:48.7474215",
+        "content": ""
+      },
+      {
+        "versionNumber": 2,
+        "creationDate": "2026-02-17T21:18:58.6413865",
+        "content": "prog"
+      }
+    ]
+  },
+  {
+    "documentId": "DOC_8",
+    "title": "hello",
+    "authorName": "author_user",
+    "authorId": 2,
+    "categoryId": 1,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2026-02-17T21:26:25.7142094",
+        "content": "hello"
+      }
+    ]
+  },
+  {
+    "documentId": "DOC_8",
+    "title": "neo",
+    "authorName": "admin",
+    "authorId": 5,
+    "categoryId": 4,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2026-02-18T02:14:38.1503029",
+        "content": "neoooooooooo"
       }
     ]
   }

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="15.0" xmlns="http://javafx.com/javafx/21" 
+      xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.multimedia_project.gui.UnifiedDocumentController">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+
+    <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <Label text="Search Documents" style="-fx-font-weight: bold;">
+            <font><Font size="18.0" /></font>
+        </Label>
+        <Region HBox.hgrow="ALWAYS" />
+        <Button fx:id="newDocumentButton" text="+ New Document" onAction="#handleNewDocument" 
+                style="-fx-base: #5cb85c; -fx-font-weight: bold;" />
+    </HBox>
+
+    <GridPane hgap="10" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100" prefWidth="120" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200" />
+        </columnConstraints>
+        
+        <Label text="Category:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <ComboBox fx:id="categorySearchCombo" prefWidth="250.0" onAction="#handleSearch" 
+                  GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+        <Label text="Title Contains:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField fx:id="titleSearchField" onKeyReleased="#handleSearch" 
+                   promptText="Type to search..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    </GridPane>
+
+    <Separator />
+
+    <SplitPane dividerPositions="0.4" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;">
+        
+        <VBox spacing="5.0">
+            <Label text="Results List" style="-fx-font-weight: bold;" />
+            <ListView fx:id="documentListView" VBox.vgrow="ALWAYS" />
+        </VBox>
+        
+        <VBox spacing="10.0">
+            <padding>
+                <Insets left="10.0" />
+            </padding>
+            
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <VBox>
+                    <Label fx:id="detailTitleLabel" text="Select a Document" style="-fx-font-weight: bold;">
+                        <font><Font size="16.0" /></font>
+                    </Label>
+                    <Label fx:id="detailAuthorLabel" text="Author Info" style="-fx-text-fill: #666;" />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="followButton" text="Follow" onAction="#handleFollow" 
+                        style="-fx-base: #2196F3; -fx-text-fill: white;" />
+                <Button fx:id="deleteDocumentButton" text="Delete" onAction="#handleDelete" 
+                        style="-fx-base: #d9534f; -fx-text-fill: white;" />
+            </HBox>
+
+            <Separator />
+
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                <Label text="Version:" />
+                <ComboBox fx:id="versionSelectorCombo" onAction="#handleVersionChange" prefWidth="80.0" />
+                <Label fx:id="versionInfoLabel" text="V1 | 2024-01-01" style="-fx-font-style: italic;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="editDocumentButton" text="Edit Mode" onAction="#handleEdit" />
+            </HBox>
+
+            <TextArea fx:id="contentDisplayArea" VBox.vgrow="ALWAYS" wrapText="true" editable="false" 
+                      style="-fx-font-family: 'Monospaced'; -fx-font-size: 13px;" />
+
+            <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                <Button fx:id="saveChangesButton" text="Save Changes (New Version)" onAction="#handleSave" 
+                        style="-fx-base: #2e649d; -fx-text-fill: white; -fx-font-weight: bold;" visible="false" />
+            </HBox>
+        </VBox>
+    </SplitPane>
+</VBox>

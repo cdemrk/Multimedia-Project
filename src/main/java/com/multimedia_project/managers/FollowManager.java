@@ -61,6 +61,15 @@ public class FollowManager {
         return userFollows.getOrDefault(username, Collections.emptyList());
     }
 
+    public boolean isFollowing(String username, String documentId) {
+        List<FollowEntry> follows = userFollows.get(username);
+        if (follows == null) {
+            return false;
+        }
+        return follows.stream()
+                    .anyMatch(entry -> entry.getDocumentId().equals(documentId));
+    }
+
     // Κατά τον τερματισμό, αυτή η μέθοδος θα χρησιμοποιηθεί για να μετατραπεί 
     // το Map σε μια λίστα για αποθήκευση στο follows.json (δεν υλοποιείται εδώ).
 

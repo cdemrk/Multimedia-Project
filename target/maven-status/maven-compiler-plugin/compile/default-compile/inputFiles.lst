@@ -10,6 +10,7 @@ C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\mult
 C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\MainApp.java
 C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\model\Document.java
 C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\model\Role.java
+C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\gui\UserManagementController.java
 C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\data\LocalDateTimeAdapter.java
 C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\gui\AdminManagementController.java
 C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\model\User.java
@@ -17,5 +18,7 @@ C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\mult
 C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\model\FollowEntry.java
 C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\gui\LoginController.java
 C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\gui\MainController.java
+C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\gui\UnifiedDocumentController.java
+C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\gui\CategoryManagementController.java
 C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\gui\DocumentManagementController.java
 C:\Despoina\SXOLH\rohY\multimedia\code\multimedia_project\src\main\java\com\multimedia_project\managers\DocumentManager.java

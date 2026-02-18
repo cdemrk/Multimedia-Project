@@ -1,5 +1,6 @@
 package com.multimedia_project.gui;
 
+import com.multimedia_project.managers.DocumentManager;
 import com.multimedia_project.managers.SystemState;
 import com.multimedia_project.model.User;
 import com.multimedia_project.model.Category;
@@ -24,6 +25,8 @@ public class CategoryManagementController {
 
     private SystemState systemState;
     private User loggedInUser;
+    private MainController mainController;
+    private DocumentManager documentManager;
     
     public void initializeData(SystemState state, User user) {
         this.systemState = state;
@@ -49,8 +52,18 @@ public class CategoryManagementController {
             }
         );
     }
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
+    public void setDocumentManager(DocumentManager documentManager) {
+        this.documentManager = documentManager;
+    }
     
     public void loadCategoryList() {
+        // Καθαρίζουμε και ξαναπαίρνουμε τα δεδομένα από τον Manager
+        categoryListView.setItems(null); 
         categoryListView.setItems(FXCollections.observableArrayList(
             systemState.getCategoryManager().getAllCategories()
         ));
@@ -65,6 +78,7 @@ public class CategoryManagementController {
         
         if (newCat != null) {
             showAlert("Success", "Category '" + newName + "' added.", Alert.AlertType.INFORMATION);
+            if (mainController != null) mainController.updateSummaryLabels(); // Ανανέωση summary!
             newCategoryNameField.clear();
             loadCategoryList();
         } else {
@@ -101,13 +115,23 @@ public class CategoryManagementController {
             ButtonType.YES, ButtonType.NO);
         
         if (confirm.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
-            // Καλείται ο CategoryManager, ο οποίος θα καλέσει τον DocumentManager για διαγραφή εγγράφων
+            // 1. Διαγραφή
             systemState.getCategoryManager().deleteCategory(selectedCategory.getId());
             
+            // 2. Ενημέρωση Summary (Main Dashboard)
+            if (mainController != null) {
+                mainController.updateSummaryLabels();
+            } else {
+                System.out.println("Debug: mainController is NULL!"); // Αν το δεις αυτό, φταίει το load
+            }
+            
+            // 3. Ανανέωση Λίστας στο UI
+            loadCategoryList(); 
+            
             showAlert("Success", "Category and all associated documents deleted.", Alert.AlertType.INFORMATION);
-            loadCategoryList();
         }
     }
+
 
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);

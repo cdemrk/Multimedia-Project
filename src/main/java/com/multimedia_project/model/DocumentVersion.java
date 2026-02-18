@@ -13,6 +13,12 @@ public class DocumentVersion {
         this.content = content;
     }
 
+    public DocumentVersion(int versionNumber, String content, LocalDateTime creationDate) {
+        this.versionNumber = versionNumber;
+        this.content = content;
+        this.creationDate = creationDate;
+    }
+
     public int getVersionNumber() { return versionNumber; }
     public LocalDateTime getCreationDate() { return creationDate; }
     public String getContent() { return content; }

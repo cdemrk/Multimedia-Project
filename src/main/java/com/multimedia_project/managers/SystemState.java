@@ -9,14 +9,20 @@ public class SystemState {
     private DataManager dataManager;
 
     public SystemState() {
-        // Αρχικοποίηση Managers
+        // 1. Αρχικοποίηση Managers (Προσοχή στη σειρά)
         this.followManager = new FollowManager();
-        this.userManager = new UserManager(); // default admin
-        this.categoryManager = new CategoryManager();
+        this.userManager = new UserManager();
+        
+        // Δημιουργούμε πρώτα τον DocumentManager γιατί τον χρειάζεται ο CategoryManager
         this.documentManager = new DocumentManager(this.followManager);
+        this.categoryManager = new CategoryManager();
+        
+        // Η ΚΡΙΣΙΜΗ ΠΡΟΣΘΗΚΗ: Σύνδεση των δύο managers
+        this.categoryManager.setDocumentManager(this.documentManager);
+
         this.dataManager = new DataManager();
         
-        // Φόρτωση Κατάστασης
+        // 2. Φόρτωση Κατάστασης (πρέπει να γίνει αφού έχουν δημιουργηθεί όλοι οι managers)
         dataManager.loadState(this); 
     }
 

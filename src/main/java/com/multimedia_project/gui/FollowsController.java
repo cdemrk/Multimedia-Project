@@ -4,6 +4,7 @@ import com.multimedia_project.managers.SystemState;
 import com.multimedia_project.model.User;
 import com.multimedia_project.model.Document;
 import com.multimedia_project.model.FollowEntry;
+import com.multimedia_project.model.Role;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -47,19 +48,26 @@ public class FollowsController {
     }
 
     private void loadLists() {
-        // 1. Φόρτωση παρακολουθούμενων εγγράφων
+        // 1. Φόρτωση παρακολουθούμενων εγγράφων (αυτά που ήδη ακολουθεί)
         List<FollowEntry> userFollows = systemState.getFollowManager().getFollowsForUser(loggedInUser.getUsername());
         followedDocumentsListView.setItems(FXCollections.observableArrayList(userFollows));
         
-        // 2. Φόρτωση διαθέσιμων εγγράφων για παρακολούθηση
-        // Δείχνουμε όλα τα έγγραφα στα οποία ο χρήστης έχει πρόσβαση και ΔΕΝ τα παρακολουθεί ήδη
+        // Λίστα με τα IDs των εγγράφων που ήδη παρακολουθούνται
         List<String> followedIds = userFollows.stream()
             .map(FollowEntry::getDocumentId)
             .collect(Collectors.toList());
 
+        // 2. Φόρτωση διαθέσιμων εγγράφων για παρακολούθηση
         List<Document> availableDocs = systemState.getDocumentManager().getAllDocuments().stream()
-            .filter(doc -> loggedInUser.canAccessCategory(doc.getCategoryId())) // Πρόσβαση
-            .filter(doc -> !followedIds.contains(doc.getDocumentId())) // Δεν παρακολουθείται ήδη
+            .filter(doc -> {
+                // Αν είναι Admin, έχει πρόσβαση στα ΠΑΝΤΑ
+                if (loggedInUser.getRole() == Role.Admin) {
+                    return true;
+                }
+                // Αν δεν είναι Admin, ελέγχουμε τις κατηγορίες του
+                return loggedInUser.canAccessCategory(doc.getCategoryId());
+            })
+            .filter(doc -> !followedIds.contains(doc.getDocumentId())) // Να μην το ακολουθεί ήδη
             .collect(Collectors.toList());
 
         availableDocumentsListView.setItems(FXCollections.observableArrayList(availableDocs));

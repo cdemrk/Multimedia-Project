@@ -1,14 +1,20 @@
 {
-  "simple_user": [
-    {
-      "documentId": "DOC-101",
-      "versionAtFollow": 1
-    }
-  ],
   "medialab": [
     {
       "documentId": "DOC-101",
-      "versionAtFollow": 3
+      "versionAtFollow": 4
+    }
+  ],
+  "author_user": [
+    {
+      "documentId": "DOC-101",
+      "versionAtFollow": 6
+    }
+  ],
+  "simple_user": [
+    {
+      "documentId": "DOC-101",
+      "versionAtFollow": 6
     }
   ]
 }

@@ -1,36 +1,38 @@
 package com.multimedia_project.gui;
 
 import com.multimedia_project.managers.SystemState;
-import com.multimedia_project.model.User;
-import com.multimedia_project.model.Role;
+import com.multimedia_project.model.DocumentVersion;
 import com.multimedia_project.model.Category;
 import com.multimedia_project.model.Document;
-import com.multimedia_project.model.DocumentVersion;
+import com.multimedia_project.model.User;
+import com.multimedia_project.model.Role;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DocumentManagementController {
 
-    // Views
     @FXML private ComboBox<Category> categoryFilterCombo;
     @FXML private ListView<Document> documentListView;
     @FXML private TextArea contentDisplayArea;
     @FXML private Label versionInfoLabel;
     @FXML private ComboBox<Integer> versionSelectorCombo;
     
-    // Management Controls (για Συγγραφείς/Διαχειριστές)
     @FXML private Button newDocumentButton;
     @FXML private Button editDocumentButton;
     @FXML private Button deleteDocumentButton;
     @FXML private Button saveChangesButton;
     
     private SystemState systemState;
+    private MainController mainController;
     private User loggedInUser;
     private Document selectedDocument;
     private boolean isEditing = false;
@@ -39,164 +41,236 @@ public class DocumentManagementController {
         this.systemState = state;
         this.loggedInUser = user;
         
+        // 1. Φόρτωση κατηγοριών
         loadCategoryFilters();
-        setupPermissions();
         
-        // Φόρτωση εγγράφων για την αρχική επιλεγμένη κατηγορία
-        categoryFilterCombo.getSelectionModel().selectFirst();
-        filterDocumentsByCategory();
+        // 2. Ρύθμιση εμφάνισης λίστας (για να βλέπουμε τον τίτλο)
+        documentListView.setCellFactory(lv -> new ListCell<Document>() {
+            @Override
+            protected void updateItem(Document item, boolean empty) {
+                super.updateItem(item, empty);
+                setText((empty || item == null) ? null : item.getTitle());
+            }
+        });
+
+        // 3. Επιλογή πρώτης κατηγορίας και αρχικό φιλτράρισμα
+        if (!categoryFilterCombo.getItems().isEmpty()) {
+            categoryFilterCombo.getSelectionModel().selectFirst();
+            refreshMyDocuments();
+        }
         
-        // Ακρόαση αλλαγών στη λίστα εγγράφων
+        // 4. Listener για επιλογή εγγράφου
         documentListView.getSelectionModel().selectedItemProperty().addListener(
             (obs, oldVal, newVal) -> showDocumentDetails(newVal)
         );
-    }
-    
-    private void setupPermissions() {
-        boolean canManage = loggedInUser.getRole() == Role.Author || loggedInUser.getRole() == Role.Admin;
         
-        // Κρύβουμε τα κουμπιά διαχείρισης για τον απλό χρήστη
-        newDocumentButton.setVisible(canManage);
-        editDocumentButton.setVisible(canManage);
-        deleteDocumentButton.setVisible(canManage);
-        saveChangesButton.setVisible(false); // Εμφανίζεται μόνο κατά την επεξεργασία
-        versionSelectorCombo.setVisible(canManage); // Ο απλός χρήστης βλέπει μόνο την τελευταία
+        saveChangesButton.setVisible(false);
+    }
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
 
     private void loadCategoryFilters() {
-        List<Category> accessibleCategories = systemState.getCategoryManager().getAllCategories().stream()
-            .filter(c -> loggedInUser.canAccessCategory(c.getId()))
-            .collect(Collectors.toList());
+        if (systemState == null || loggedInUser == null) return;
         
-        categoryFilterCombo.setItems(FXCollections.observableArrayList(accessibleCategories));
+        List<Category> categories;
+        if (loggedInUser.getRole() == Role.Admin) {
+            // Ο Admin βλέπει όλες τις κατηγορίες για να μπορεί να φιλτράρει τα πάντα
+            categories = systemState.getCategoryManager().getAllCategories();
+        } else {
+            // Οι υπόλοιποι βλέπουν μόνο όσες έχουν πρόσβαση
+            categories = systemState.getCategoryManager().getAllCategories().stream()
+                .filter(c -> loggedInUser.canAccessCategory(c.getId()))
+                .collect(Collectors.toList());
+        }
+        
+        categoryFilterCombo.setItems(FXCollections.observableArrayList(categories));
     }
-    
+
     @FXML
     private void filterDocumentsByCategory() {
-        Category selectedCategory = categoryFilterCombo.getSelectionModel().getSelectedItem();
-        if (selectedCategory == null) return;
-        
-        // Φιλτράρουμε όλα τα έγγραφα του συστήματος
+        refreshMyDocuments();
+    }
+
+
+    private void refreshMyDocuments() {
+        Category selectedCat = categoryFilterCombo.getSelectionModel().getSelectedItem();
+        if (selectedCat == null || loggedInUser == null) return;
+
         List<Document> filteredDocs = systemState.getDocumentManager().getAllDocuments().stream()
-            .filter(doc -> doc.getCategoryId() == selectedCategory.getId())
+            .filter(doc -> doc.getCategoryId() == selectedCat.getId()) 
+            .filter(doc -> {
+                // 1. Admin: Βλέπει τα πάντα στην επιλεγμένη κατηγορία
+                if (loggedInUser.getRole() == Role.Admin) return true;
+                
+                // 2. Author: Βλέπει τα πάντα στην κατηγορία ΑΝ έχει access σε αυτήν
+                if (loggedInUser.getRole() == Role.Author) {
+                    return loggedInUser.canAccessCategory(doc.getCategoryId());
+                }
+                
+                // 3. Simple User: Μόνο τα δικά του
+                return doc.getAuthorId() == loggedInUser.getId();
+            })
             .collect(Collectors.toList());
-            
+                        
         documentListView.setItems(FXCollections.observableArrayList(filteredDocs));
     }
 
+    
     private void showDocumentDetails(Document doc) {
         if (doc == null) {
             contentDisplayArea.setText("");
             versionInfoLabel.setText("");
             versionSelectorCombo.getItems().clear();
             selectedDocument = null;
+            // Απενεργοποίηση κουμπιών αν δεν υπάρχει επιλεγμένο έγγραφο
+            editDocumentButton.setDisable(true);
+            deleteDocumentButton.setDisable(true);
             return;
         }
         
         this.selectedDocument = doc;
-        
-        // Γεμίζουμε το ComboBox με τις διαθέσιμες εκδόσεις
-        List<DocumentVersion> availableVersions = doc.getVersions(loggedInUser);
-        ObservableList<Integer> versions = availableVersions.stream()
+        isEditing = false;
+        contentDisplayArea.setEditable(false);
+        saveChangesButton.setVisible(false);
+
+        // --- ΕΛΕΓΧΟΣ ΔΙΚΑΙΩΜΑΤΩΝ ---
+        boolean canModify = false;
+
+        if (loggedInUser.getRole() == Role.Admin) {
+            // Ο Admin μπορεί να τροποποιήσει τα πάντα
+            canModify = true;
+        } else if (loggedInUser.getRole() == Role.Author) {
+            // Ο Author μπορεί να τροποποιήσει ό,τι ανήκει στις κατηγορίες του
+            canModify = loggedInUser.canAccessCategory(doc.getCategoryId());
+        } else {
+            // Ο Simple User (αν έχει πρόσβαση στο view) μόνο τα δικά του
+            canModify = (doc.getAuthorId() == loggedInUser.getId());
+        }
+
+        // Εφαρμογή των δικαιωμάτων στα κουμπιά
+        editDocumentButton.setDisable(!canModify);
+        deleteDocumentButton.setDisable(!canModify);
+
+        // --- ΥΠΟΛΟΙΠΗ ΛΕΙΤΟΥΡΓΙΚΟΤΗΤΑ ---
+        // Γέμισμα εκδόσεων
+        ObservableList<Integer> versions = doc.getVersions().stream()
             .map(DocumentVersion::getVersionNumber)
             .collect(Collectors.toCollection(FXCollections::observableArrayList));
-            
+                
         versionSelectorCombo.setItems(versions);
+        versionSelectorCombo.getSelectionModel().selectLast();
         
-        // Επιλέγουμε πάντα την τελευταία έκδοση
-        versionSelectorCombo.getSelectionModel().select(doc.getLatestVersion().getVersionNumber());
+        updateDisplay(doc.getLatestVersion());
     }
 
     @FXML
     private void handleVersionChange() {
         if (selectedDocument == null || versionSelectorCombo.getSelectionModel().isEmpty()) return;
-
-        int selectedVersionNumber = versionSelectorCombo.getSelectionModel().getSelectedItem();
-        
-        // Βρίσκουμε το DocumentVersion με τον επιλεγμένο αριθμό
-        Optional<DocumentVersion> versionOpt = selectedDocument.getVersions().stream()
-            .filter(v -> v.getVersionNumber() == selectedVersionNumber)
-            .findFirst();
-
-        if (versionOpt.isPresent()) {
-            DocumentVersion version = versionOpt.get();
-            contentDisplayArea.setText(version.getContent());
-            versionInfoLabel.setText("Viewing Version: " + version.getVersionNumber() + 
-                                     " | Created: " + version.getCreationDate().toLocalDate());
-        }
+        int vn = versionSelectorCombo.getSelectionModel().getSelectedItem();
+        selectedDocument.getVersions().stream()
+            .filter(v -> v.getVersionNumber() == vn)
+            .findFirst()
+            .ifPresent(this::updateDisplay);
     }
-    
+
+    private void updateDisplay(DocumentVersion v) {
+        contentDisplayArea.setText(v.getContent());
+        versionInfoLabel.setText("V" + v.getVersionNumber() + " | " + v.getCreationDate().toLocalDate());
+    }
+
+
     @FXML
     private void handleNewDocument() {
-        // [ΛΟΓΙΚΗ ΔΗΜΙΟΥΡΓΙΑΣ] Εμφάνιση Modal/Φόρμας για προσθήκη τίτλου/κατηγορίας/περιεχομένου
-        // ... (κατόπιν καλείται ο systemState.getDocumentManager().createDocument(...))
-        // ...
-        // Ανανέωση λίστας: filterDocumentsByCategory();
+        // 1. Δημιουργία ενός Custom Dialog
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Create New Document");
+        dialog.setHeaderText("Enter details for the new document");
+
+        // 2. Ορισμός των Buttons
+        ButtonType createButtonType = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(createButtonType, ButtonType.CANCEL);
+
+        // 3. Δημιουργία του Layout του διαλόγου
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField titleField = new TextField();
+        titleField.setPromptText("Title");
+        
+        ComboBox<Category> catCombo = new ComboBox<>(categoryFilterCombo.getItems());
+        catCombo.getSelectionModel().selectFirst();
+
+        TextArea contentArea = new TextArea();
+        contentArea.setPromptText("Enter initial content here...");
+        contentArea.setPrefRowCount(10);
+
+        grid.add(new Label("Title:"), 0, 0);
+        grid.add(titleField, 1, 0);
+        grid.add(new Label("Category:"), 0, 1);
+        grid.add(catCombo, 1, 1);
+        grid.add(new Label("Content:"), 0, 2);
+        grid.add(contentArea, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // 4. Επεξεργασία του αποτελέσματος
+        Optional<ButtonType> result = dialog.showAndWait();
+
+        if (result.isPresent() && result.get() == createButtonType) {
+            String title = titleField.getText().trim();
+            Category selectedCat = catCombo.getValue();
+            String content = contentArea.getText();
+
+            if (title.isEmpty() || selectedCat == null) {
+                new Alert(Alert.AlertType.ERROR, "Title and Category are required!").show();
+                return;
+            }
+
+            // 5. Δημιουργία εγγράφου με το ΠΡΑΓΜΑΤΙΚΟ περιεχόμενο ως Version 1
+            Document newDoc = systemState.getDocumentManager().createDocument(
+                title, 
+                selectedCat.getId(), 
+                loggedInUser.getId(), 
+                loggedInUser.getUsername(),
+                content
+            );
+
+            if (newDoc != null) {
+                refreshMyDocuments();
+                documentListView.getSelectionModel().select(newDoc);
+                showDocumentDetails(newDoc);
+            }
+        }
     }
-    
+
     @FXML
     private void handleEditDocument() {
         if (selectedDocument == null) return;
-        
-        // Επιτρέπουμε μόνο την επεξεργασία του κειμένου
+        isEditing = true;
         contentDisplayArea.setEditable(true);
         saveChangesButton.setVisible(true);
         editDocumentButton.setDisable(true);
-        isEditing = true;
     }
 
     @FXML
     private void handleSaveChanges() {
-        if (!isEditing || selectedDocument == null) return;
-        
-        String newContent = contentDisplayArea.getText();
-        
-        // [ΛΟΓΙΚΗ VERSIONING] Καλείται η μέθοδος τροποποίησης του Manager
-        boolean success = systemState.getDocumentManager().modifyDocument(
-            selectedDocument.getDocumentId(), 
-            newContent
-        );
-        
-        if (success) {
-            // Επαναφορά στην κατάσταση προβολής
-            contentDisplayArea.setEditable(false);
-            editDocumentButton.setDisable(false);
-            saveChangesButton.setVisible(false);
-            isEditing = false;
-            
-            // Ανανέωση του view και εμφάνιση της νέας έκδοσης
-            showDocumentDetails(selectedDocument); 
-            
-            showAlert("Success", "Document saved and new version created (V" + selectedDocument.getLatestVersion().getVersionNumber() + ").", Alert.AlertType.INFORMATION);
-        } else {
-            showAlert("Error", "Could not save changes.", Alert.AlertType.ERROR);
+        if (systemState.getDocumentManager().modifyDocument(selectedDocument.getDocumentId(), contentDisplayArea.getText())) {
+            showDocumentDetails(selectedDocument);
+            if (mainController != null) mainController.updateSummaryLabels(); // Ανανέωση summary
+            new Alert(Alert.AlertType.INFORMATION, "Saved!").show();
         }
     }
 
     @FXML
     private void handleDeleteDocument() {
         if (selectedDocument == null) return;
-        
-        // Επιβεβαίωση διαγραφής
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete the document: " + selectedDocument.getTitle() + "?", ButtonType.YES, ButtonType.NO);
-        Optional<ButtonType> result = confirm.showAndWait();
-        
-        if (result.isPresent() && result.get() == ButtonType.YES) {
-            // [ΛΟΓΙΚΗ ΔΙΑΓΡΑΦΗΣ] Καλείται η μέθοδος διαγραφής του Manager (που ενημερώνει και τους Followers)
-            systemState.getDocumentManager().deleteDocument(selectedDocument.getDocumentId());
-            
-            // Ανανέωση λίστας
-            filterDocumentsByCategory();
-            showDocumentDetails(null);
-            showAlert("Success", "Document deleted successfully.", Alert.AlertType.INFORMATION);
-        }
-    }
-    
-    private void showAlert(String title, String message, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        systemState.getDocumentManager().deleteDocument(selectedDocument.getDocumentId());
+        refreshMyDocuments();
+        showDocumentDetails(null);
+        if (mainController != null) mainController.updateSummaryLabels(); // Ανανέωση summary
     }
 }
