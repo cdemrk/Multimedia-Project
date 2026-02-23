@@ -39,20 +39,6 @@
     ]
   },
   {
-    "documentId": "DOC-102",
-    "title": "React Tutorial for Beginners",
-    "authorName": "Despoina Markatou",
-    "authorId": 2,
-    "categoryId": 3,
-    "versions": [
-      {
-        "versionNumber": 1,
-        "creationDate": "2026-02-16T12:00:00",
-        "content": "Welcome to React! In this doc we explain components and hooks."
-      }
-    ]
-  },
-  {
     "documentId": "DOC-104",
     "title": "Advanced Python Tips",
     "authorName": "Despoina Markatou",
@@ -115,34 +101,6 @@
         "versionNumber": 2,
         "creationDate": "2026-02-17T21:18:58.6413865",
         "content": "prog"
-      }
-    ]
-  },
-  {
-    "documentId": "DOC_8",
-    "title": "hello",
-    "authorName": "author_user",
-    "authorId": 2,
-    "categoryId": 1,
-    "versions": [
-      {
-        "versionNumber": 1,
-        "creationDate": "2026-02-17T21:26:25.7142094",
-        "content": "hello"
-      }
-    ]
-  },
-  {
-    "documentId": "DOC_8",
-    "title": "neo",
-    "authorName": "admin",
-    "authorId": 5,
-    "categoryId": 4,
-    "versions": [
-      {
-        "versionNumber": 1,
-        "creationDate": "2026-02-18T02:14:38.1503029",
-        "content": "neoooooooooo"
       }
     ]
   }

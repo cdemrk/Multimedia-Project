@@ -94,6 +94,9 @@ public class FollowManager {
         
         System.out.println("Follows removed for deleted document: " + documentId);
     }
-    
-    // ... (πρέπει να έχετε getters και setters για το JSON I/O) ...
+
+    public void removeFollowsByDocumentId(String documentId) {
+        // Χρησιμοποιούμε τη μέθοδο που υπάρχει ήδη και λειτουργεί σωστά με το Map
+        removeFollowsForDeletedDocument(documentId);
+    }
 }

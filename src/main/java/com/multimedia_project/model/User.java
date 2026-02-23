@@ -1,5 +1,6 @@
 package com.multimedia_project.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -10,7 +11,7 @@ public class User {
     private String lastName;
     private Role role;
     private List<Integer> accessCategoryIds;
-
+    
     // Constructor, Getters και Setters
     public User(String username, String password, String firstName, String lastName, Role role, List<Integer> accessCategoryIds) {
         this.username = username;
@@ -41,5 +42,12 @@ public class User {
             return firstName + " " + lastName + " (" + username + ")";
         }
         return username; 
+    }
+
+    public List<Integer> getAccessibleCategoryIds() {
+        if (this.accessCategoryIds == null) {
+            this.accessCategoryIds = new ArrayList<>();
+        }
+        return this.accessCategoryIds;
     }
 }

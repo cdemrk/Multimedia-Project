@@ -36,6 +36,8 @@ public class MainController {
 
     private SystemState systemState;
     private User loggedInUser;
+    private UnifiedDocumentController unifiedDocumentController;
+    private FollowsController followsController;
 
     public void initializeData(SystemState state, User user) {
         this.systemState = state;
@@ -59,40 +61,44 @@ public class MainController {
         }
 
         updateSummaryLabels();
-        checkForNewVersions(); 
+        checkForNewVersions();
+
+        mainTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (newTab != null) {
+                refreshCurrentTab(newTab.getText());
+            }
+        });
+    }
+
+    private void refreshCurrentTab(String tabTitle) {
+        if (tabTitle.equals("Documents Explorer") && unifiedDocumentController != null) {
+            unifiedDocumentController.handleSearch();
+        } else if (tabTitle.equals("My Follows") && followsController != null) {
+            followsController.loadLists();
+        }
+        updateSummaryLabels();
     }
 
     private void loadUnifiedDocumentView() {
         try {
-            // ΔΙΟΡΘΩΜΕΝΟ PATH
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/multimedia_project/fxml/UnifiedDocumentView.fxml"));
             Node node = loader.load();
-            
-            UnifiedDocumentController controller = loader.getController();
-            controller.initializeData(systemState, loggedInUser);
-            controller.setMainController(this); 
-            
+            unifiedDocumentController = loader.getController(); // Αποθήκευση αναφοράς
+            unifiedDocumentController.initializeData(systemState, loggedInUser);
+            unifiedDocumentController.setMainController(this);
             documentTabContent.getChildren().setAll(node);
-        } catch (IOException e) {
-            System.err.println("Error loading UnifiedDocumentView: " + e.getMessage());
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     private void loadFollowsView() {
         try {
-            // ΔΙΟΡΘΩΜΕΝΟ PATH (Εδώ χτυπούσε το σφάλμα στη γραμμή 91)
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/multimedia_project/fxml/follows_view.fxml"));
             Node node = loader.load();
-            
-            FollowsController controller = loader.getController();
-            controller.initializeData(systemState, loggedInUser);
-            
+            followsController = loader.getController(); // Αποθήκευση αναφοράς
+            followsController.initializeData(systemState, loggedInUser);
+            followsController.setMainController(this);
             followsTabContent.getChildren().setAll(node);
-        } catch (IOException e) {
-            System.err.println("Error loading follows_view: " + e.getMessage());
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
     private void loadUserManagementView() {

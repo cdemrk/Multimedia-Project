@@ -32,7 +32,12 @@ public class UserManager {
     }
 
     public void addUser(String username, String password, String firstName, String lastName, Role role, List<Integer> accessIds) {
-        // Εδώ θα έμπαινε έλεγχος για μοναδικό username
+        // Προαιρετικός έλεγχος μοναδικότητας
+        boolean exists = users.stream().anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
+        if (exists) {
+            System.err.println("User already exists!");
+            return;
+        }
         this.users.add(new User(username, password, firstName, lastName, role, accessIds));
     }
 
@@ -77,7 +82,14 @@ public class UserManager {
         return wasDeleted;
     }
 
-    // ... Άλλες μέθοδοι: deleteUser(), findUserByUsername(), getAllUsers() ...
-    
-    // ... Μέθοδοι: authenticate(), addUser(), deleteUser() ...
+    public void removeCategoryIdFromAllUsers(int categoryId) {
+        for (User user : users) {
+            // Καλούμε τη μέθοδο που φτιάξαμε στην User.java
+            List<Integer> categories = user.getAccessibleCategoryIds();
+            
+            if (categories != null) {
+                categories.removeIf(id -> id == categoryId);
+            }
+        }
+    }
 }

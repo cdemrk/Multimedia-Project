@@ -105,33 +105,48 @@ public class CategoryManagementController {
         }
     }
 
+
     @FXML
     private void handleDeleteCategory() {
         Category selectedCategory = categoryListView.getSelectionModel().getSelectedItem();
         if (selectedCategory == null) return;
         
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, 
-            "WARNING: Deleting this category will DELETE ALL documents belonging to it! Proceed?", 
+            "WARNING: Deleting this category will delete all associated documents, follows, and user permissions! Proceed?", 
             ButtonType.YES, ButtonType.NO);
         
         if (confirm.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
-            // 1. Διαγραφή
-            systemState.getCategoryManager().deleteCategory(selectedCategory.getId());
+            int catId = selectedCategory.getId();
+
+            // 1. Αφαίρεση της κατηγορίας από τη λίστα πρόσβασης ΟΛΩΝ των χρηστών
+            // Αυτό διασφαλίζει ότι κανείς δεν θα έχει πλέον δικαίωμα σε μια ανύπαρκτη κατηγορία
+            systemState.getUserManager().getAllUsers().forEach(user -> {
+                user.getAccessibleCategoryIds().removeIf(id -> id == catId);
+            });
+
+            // 2. Διαγραφή των Follows για ΟΛΑ τα έγγραφα αυτής της κατηγορίας
+            // Πρώτα βρίσκουμε ποια έγγραφα ανήκουν εδώ
+            systemState.getDocumentManager().getAllDocuments().stream()
+                .filter(doc -> doc.getCategoryId() == catId)
+                .forEach(doc -> {
+                    systemState.getFollowManager().removeFollowsForDeletedDocument(doc.getDocumentId());
+                });
+
+            // 3. Διαγραφή της κατηγορίας (και των εγγράφων της) από τον CategoryManager
+            systemState.getCategoryManager().deleteCategory(catId);
             
-            // 2. Ενημέρωση Summary (Main Dashboard)
+            // 4. Ενημέρωση Summary (Main Dashboard)
             if (mainController != null) {
                 mainController.updateSummaryLabels();
-            } else {
-                System.out.println("Debug: mainController is NULL!"); // Αν το δεις αυτό, φταίει το load
             }
             
-            // 3. Ανανέωση Λίστας στο UI
+            // 5. Ανανέωση Λίστας στο UI
             loadCategoryList(); 
             
-            showAlert("Success", "Category and all associated documents deleted.", Alert.AlertType.INFORMATION);
+            showAlert("Success", "Category, documents, follows, and user permissions updated successfully.", Alert.AlertType.INFORMATION);
         }
     }
-
+    
 
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);

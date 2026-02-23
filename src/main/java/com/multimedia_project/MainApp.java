@@ -82,7 +82,18 @@ public class MainApp extends Application {
         controller.initializeData(getSystemState(), loggedInUser);
         
         primaryStage.setTitle("MediaLab Documents - Welcome " + loggedInUser.getFirstName());
-        primaryStage.setScene(new Scene(root, 1000, 700));
+        
+        // Δημιουργούμε το Scene
+        Scene scene = new Scene(root);
+        primaryStage.setScene(scene);
+
+        // ΑΥΤΟ ΕΙΝΑΙ ΤΟ ΚΛΕΙΔΙ: Μεγιστοποίηση παραθύρου
+        primaryStage.setMaximized(true); 
+        
+        // Αν θέλεις να μην μπορεί ο χρήστης να το μικρύνει κάτω από ένα όριο:
+        primaryStage.setMinWidth(1000);
+        primaryStage.setMinHeight(700);
+
         primaryStage.show();
     }
 

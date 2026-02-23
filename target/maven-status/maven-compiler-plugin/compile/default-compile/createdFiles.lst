@@ -10,7 +10,6 @@ com\multimedia_project\data\TypeTokens$1.class
 com\multimedia_project\model\Category.class
 com\multimedia_project\gui\FollowsController.class
 com\multimedia_project\model\FollowEntry.class
-com\multimedia_project\gui\DocumentManagementController.class
 com\multimedia_project\gui\FollowsController$1.class
 com\multimedia_project\MainApp.class
 com\multimedia_project\data\TypeTokens$3.class
@@ -18,11 +17,9 @@ com\multimedia_project\model\DocumentVersion.class
 com\multimedia_project\data\DataManager.class
 com\multimedia_project\gui\CategoryManagementController.class
 com\multimedia_project\model\Document.class
-com\multimedia_project\gui\DocumentSearchController$DocumentResult.class
 com\multimedia_project\managers\SystemState.class
 com\multimedia_project\data\LocalDateTimeAdapter.class
 com\multimedia_project\data\TypeTokens$2.class
-com\multimedia_project\gui\DocumentSearchController.class
 com\multimedia_project\gui\AdminManagementController$1.class
 com\multimedia_project\managers\FollowManager.class
 com\multimedia_project\managers\CategoryManager.class

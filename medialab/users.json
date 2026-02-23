@@ -67,5 +67,28 @@
     "accessCategoryIds": [
       1
     ]
+  },
+  {
+    "userid": 0,
+    "username": "efmark",
+    "password": "123",
+    "firstName": "efthimis",
+    "lastName": "markatos",
+    "role": "SimpleUser",
+    "accessCategoryIds": [
+      1,
+      3
+    ]
+  },
+  {
+    "userid": 7,
+    "username": "test",
+    "password": "test",
+    "firstName": "test",
+    "lastName": "test",
+    "role": "SimpleUser",
+    "accessCategoryIds": [
+      3
+    ]
   }
 ]

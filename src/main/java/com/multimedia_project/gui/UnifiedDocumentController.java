@@ -104,7 +104,7 @@ public class UnifiedDocumentController {
     }
 
     @FXML
-    private void handleSearch() {
+    public void handleSearch() {
         Category selectedCat = categorySearchCombo.getValue();
         String titleQuery = titleSearchField.getText().trim().toLowerCase();
 
@@ -184,15 +184,22 @@ public class UnifiedDocumentController {
     }
 
     @FXML
-    private void handleFollow() {
+    public void handleFollow() {
         if (selectedDocument == null) return;
+        
         systemState.getFollowManager().addFollow(
                 loggedInUser.getUsername(),
                 selectedDocument.getDocumentId(),
                 selectedDocument.getLatestVersion().getVersionNumber()
         );
+        
         updateFollowButtonState();
-        if (mainController != null) mainController.updateSummaryLabels();
+
+        // ΑΥΤΟ ΕΙΝΑΙ ΤΟ ΚΛΕΙΔΙ:
+        if (mainController != null) {
+            mainController.updateSummaryLabels();
+        }
+        
         new Alert(Alert.AlertType.INFORMATION, "Following " + selectedDocument.getTitle()).show();
     }
 
@@ -209,8 +216,6 @@ public class UnifiedDocumentController {
         contentDisplayArea.setText(v.getContent());
         versionInfoLabel.setText("V" + v.getVersionNumber() + " | " + v.getCreationDate().toLocalDate());
     }
-
-    // --- MANAGEMENT OPERATIONS ---
 
     @FXML
     private void handleNewDocument() {
@@ -326,15 +331,18 @@ public class UnifiedDocumentController {
 
     @FXML
     private void handleDelete() {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Delete this document?", ButtonType.YES, ButtonType.NO);
+        if (selectedDocument == null) return;
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Delete this document and all its follows?", ButtonType.YES, ButtonType.NO);
         if (confirm.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
-            systemState.getDocumentManager().deleteDocument(selectedDocument.getDocumentId());
+            String docId = selectedDocument.getDocumentId();
+            systemState.getFollowManager().removeFollowsByDocumentId(docId);
+            systemState.getDocumentManager().deleteDocument(docId);
             handleSearch();
             clearDetails();
-            if (mainController != null) mainController.updateSummaryLabels();
+            if (mainController != null) {mainController.updateSummaryLabels();}
         }
     }
-
+    
     private void clearDetails() {
         selectedDocument = null;
         detailTitleLabel.setText("");

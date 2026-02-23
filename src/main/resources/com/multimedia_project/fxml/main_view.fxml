@@ -5,27 +5,27 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" 
-            prefHeight="750.0" prefWidth="1100.0" 
-            xmlns="http://javafx.com/javafx/21" 
+<BorderPane xmlns="http://javafx.com/javafx/21" 
             xmlns:fx="http://javafx.com/fxml/1" 
-            fx:controller="com.multimedia_project.gui.MainController">
+            fx:controller="com.multimedia_project.gui.MainController"
+            prefHeight="750.0" prefWidth="1100.0">
     
     <padding>
         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
     </padding>
 
     <center>
-        <SplitPane dividerPositions="0.22" focusTraversable="true" BorderPane.alignment="CENTER">
+        <SplitPane dividerPositions="0.16" focusTraversable="true" BorderPane.alignment="CENTER">
             
-            <VBox fx:id="summaryPanel" spacing="20.0" style="-fx-background-color: #f4f4f4;">
+            <VBox fx:id="summaryPanel" spacing="15.0" style="-fx-background-color: #f4f4f4;" 
+                  minWidth="160.0" maxWidth="250.0">
                 <padding>
-                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    <Insets bottom="15.0" left="10.0" right="10.0" top="15.0" />
                 </padding>
                 
-                <Label text="System Summary">
+                <Label text="Summary">
                     <font>
-                        <Font name="System Bold" size="18.0" />
+                        <Font name="System Bold" size="16.0" />
                     </font>
                 </Label>
                 
@@ -33,17 +33,17 @@
                 
                 <VBox spacing="10.0">
                     <HBox alignment="CENTER_LEFT">
-                        <Label text="Categories:" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                        <Label text="Categories:" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 12;" />
                         <Label fx:id="totalCategoriesLabel" text="0" style="-fx-font-weight: bold;" />
                     </HBox>
                     
                     <HBox alignment="CENTER_LEFT">
-                        <Label text="Documents:" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                        <Label text="Documents:" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 12;" />
                         <Label fx:id="totalDocumentsLabel" text="0" style="-fx-font-weight: bold;" />
                     </HBox>
                     
                     <HBox alignment="CENTER_LEFT">
-                        <Label text="Following:" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                        <Label text="Following:" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 12;" />
                         <Label fx:id="userFollowsLabel" text="0" style="-fx-font-weight: bold;" />
                     </HBox>
                 </VBox>
@@ -51,14 +51,14 @@
                 <Separator />
                 
                 <VBox spacing="5.0">
-                    <Label text="Current User Info:" style="-fx-font-size: 11; -fx-text-fill: gray;" />
-                    <Label fx:id="userRoleLabel" text="Role: N/A" style="-fx-font-weight: bold;" wrapText="true" />
+                    <Label text="User Info:" style="-fx-font-size: 10; -fx-text-fill: gray;" />
+                    <Label fx:id="userRoleLabel" text="Role: N/A" style="-fx-font-weight: bold; -fx-font-size: 11;" wrapText="true" />
                 </VBox>
                 
                 <Region VBox.vgrow="ALWAYS" />
                 
                 <Button maxWidth="Infinity" text="Logout" onAction="#handleLogout" 
-                        style="-fx-background-color: #d9534f; -fx-text-fill: white;" />
+                        style="-fx-background-color: #d9534f; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold;" />
             </VBox>
             
             <VBox fx:id="contentPanel">
@@ -66,25 +66,25 @@
                     
                     <Tab text="Documents Explorer">
                         <content>
-                            <VBox fx:id="documentTabContent" />
+                            <VBox fx:id="documentTabContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" />
                         </content>
                     </Tab>
                     
                     <Tab text="My Follows">
                         <content>
-                            <VBox fx:id="followsTabContent" />
+                            <VBox fx:id="followsTabContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" />
                         </content>
                     </Tab>
                     
                     <Tab fx:id="userManagementTab" text="User Management">
                         <content>
-                            <VBox fx:id="userTabContent" /> 
+                            <VBox fx:id="userTabContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" /> 
                         </content>
                     </Tab>
                     
                     <Tab fx:id="categoryManagementTab" text="Category Management">
                         <content>
-                            <VBox fx:id="categoryTabContent" /> 
+                            <VBox fx:id="categoryTabContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" /> 
                         </content>
                     </Tab>
                     

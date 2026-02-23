@@ -16,5 +16,23 @@
       "documentId": "DOC-101",
       "versionAtFollow": 6
     }
+  ],
+  "admin": [
+    {
+      "documentId": "DOC-101",
+      "versionAtFollow": 6
+    },
+    {
+      "documentId": "DOC-104",
+      "versionAtFollow": 1
+    },
+    {
+      "documentId": "DOC-105",
+      "versionAtFollow": 1
+    },
+    {
+      "documentId": "DOC_6",
+      "versionAtFollow": 2
+    }
   ]
 }
