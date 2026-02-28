@@ -11,15 +11,14 @@ public class UserManager {
 
     public UserManager() {
         this.users = new ArrayList<>();
-        // Προσθήκη του default admin με ID = 1
         this.users.add(new User(
-            1, // userid
+            1, 
             "medialab",
             "medialab_2025",
             "Default",
             "Admin",
             Role.Admin,
-            List.of(1, 2)
+            new ArrayList<>()
         ));
     }
 
@@ -31,21 +30,20 @@ public class UserManager {
     }
 
     public void addUser(String username, String password, String firstName, String lastName, Role role, List<Integer> accessIds) throws Exception {
-        // 1. Έλεγχος μοναδικότητας username
+
         boolean exists = users.stream().anyMatch(u -> u.getUsername().equalsIgnoreCase(username));
         if (exists) {
-            // Πετάμε Exception αντί για απλό System.err
             throw new Exception("The username '" + username + "' already exists!");
         }
 
-        // 2. Υπολογισμός του επόμενου ID
         int nextId = users.stream()
                         .mapToInt(User::getId)
                         .max()
                         .orElse(0) + 1;
 
-        // 3. Προσθήκη χρήστη
-        this.users.add(new User(nextId, username, password, firstName, lastName, role, accessIds));
+        List<Integer> finalAccessIds = (role == Role.Admin) ? new ArrayList<>() : new ArrayList<>(accessIds);
+
+        this.users.add(new User(nextId, username, password, firstName, lastName, role, finalAccessIds));
     }
 
     public boolean isInitialRun() {

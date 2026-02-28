@@ -1,18 +1,26 @@
 [
   {
     "id": 1,
-    "name": "Programming Langs"
+    "name": "Programming"
+  },
+  {
+    "id": 2,
+    "name": "Physics"
   },
   {
     "id": 3,
-    "name": "Database Systems"
+    "name": "Mathematics"
   },
   {
     "id": 4,
-    "name": "test2"
+    "name": "Philosophy"
   },
   {
     "id": 5,
-    "name": "wwwwwwwwwwww"
+    "name": "Psychology"
+  },
+  {
+    "id": 6,
+    "name": "Economics"
   }
 ]

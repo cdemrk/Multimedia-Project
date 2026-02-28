@@ -32,7 +32,6 @@ public class UserManagementController {
     }
     
     private void setupListView() {
-        // Ακρόαση για εμφάνιση/απόκρυψη του Delete
         userListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             deleteUserButton.setVisible(newVal != null);
         });
@@ -48,35 +47,42 @@ public class UserManagementController {
 
     @FXML
     private void handleShowAddUserDialog() {
-        // 1. Δημιουργία του Dialog
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Create New User");
         dialog.setHeaderText("Fill in the details for the new user account.");
 
-        // 2. Ορισμός Buttons
         ButtonType createButtonType = new ButtonType("Create User", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(createButtonType, ButtonType.CANCEL);
 
-        // 3. Κατασκευή του Layout του παραθύρου
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        TextField fName = new TextField(); fName.setPromptText("First Name");
-        TextField lName = new TextField(); lName.setPromptText("Last Name");
+        TextField fName = new TextField(); fName.setPromptText("First Name (Required)");
+        TextField lName = new TextField(); lName.setPromptText("Last Name (Required)");
         TextField uName = new TextField(); uName.setPromptText("Username (Required)");
         PasswordField pWord = new PasswordField(); pWord.setPromptText("Password (Required)");
         
         ComboBox<Role> roleCombo = new ComboBox<>(FXCollections.observableArrayList(Arrays.asList(Role.SimpleUser, Role.Author, Role.Admin)));
         roleCombo.getSelectionModel().selectFirst();
 
-        // Λίστα κατηγοριών με Toggle Logic
         ListView<Category> catList = new ListView<>(FXCollections.observableArrayList(systemState.getCategoryManager().getAllCategories()));
         catList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         catList.setPrefHeight(150);
         
-        // Custom cell factory για toggle επιλογή κατηγοριών χωρίς Ctrl
+        // --- ΠΡΟΣΘΗΚΗ LISTENER ΓΙΑ ΤΟΝ ΡΟΛΟ ADMIN ---
+        roleCombo.getSelectionModel().selectedItemProperty().addListener((obs, oldRole, newRole) -> {
+            if (newRole == Role.Admin) {
+                catList.getSelectionModel().clearSelection(); // Καθαρισμός επιλογών
+                catList.setDisable(true);                    // Απενεργοποίηση λίστας
+                catList.setOpacity(0.5);                     // Οπτική ένδειξη "γκριζαρίσματος"
+            } else {
+                catList.setDisable(false);                   // Επαναφορά λίστας
+                catList.setOpacity(1.0);
+            }
+        });
+
         catList.setCellFactory(lv -> {
             ListCell<Category> cell = new ListCell<Category>() {
                 @Override protected void updateItem(Category item, boolean empty) {
@@ -85,7 +91,7 @@ public class UserManagementController {
                 }
             };
             cell.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
-                if (!cell.isEmpty()) {
+                if (!cell.isEmpty() && !catList.isDisable()) { // Έλεγχος αν η λίστα είναι ενεργή
                     catList.requestFocus();
                     int index = cell.getIndex();
                     if (catList.getSelectionModel().isSelected(index)) catList.getSelectionModel().clearSelection(index);
@@ -105,23 +111,31 @@ public class UserManagementController {
 
         dialog.getDialogPane().setContent(grid);
 
-        // 4. Επεξεργασία αποτελέσματος
         Optional<ButtonType> result = dialog.showAndWait();
         if (result.isPresent() && result.get() == createButtonType) {
             try {
+                String firstName = fName.getText().trim();
+                String lastName = lName.getText().trim();
                 String username = uName.getText().trim();
                 String password = pWord.getText();
+                Role selectedRole = roleCombo.getValue();
                 
                 List<Integer> accessIds = catList.getSelectionModel().getSelectedItems().stream()
                     .map(Category::getId)
                     .collect(Collectors.toList());
 
-                if (username.isEmpty() || password.isEmpty() || accessIds.isEmpty()) {
-                    showAlert("Validation Error", "Username, Password and at least one category are required.", Alert.AlertType.ERROR);
+                // --- ΤΡΟΠΟΠΟΙΗΜΕΝΟΣ ΕΛΕΓΧΟΣ VALIDATION ---
+                // Αν είναι Admin, δεν απαιτούμε πλέον επιλεγμένη κατηγορία στο check
+                boolean isCategoryRequired = (selectedRole != Role.Admin);
+                if (firstName.isEmpty() || lastName.isEmpty() || username.isEmpty() || password.isEmpty() || (isCategoryRequired && accessIds.isEmpty())) {
+                    String errorMsg = isCategoryRequired ? 
+                        "All fields and at least one category are required." : 
+                        "All personal details (Name, Username, Password) are required.";
+                    showAlert("Validation Error", errorMsg, Alert.AlertType.ERROR);
                     return;
                 }
 
-                systemState.getUserManager().addUser(username, password, fName.getText(), lName.getText(), roleCombo.getValue(), accessIds);
+                systemState.getUserManager().addUser(username, password, firstName, lastName, selectedRole, accessIds);
                 loadUserList();
                 showAlert("Success", "User " + username + " created successfully.", Alert.AlertType.INFORMATION);
             } catch (Exception e) {

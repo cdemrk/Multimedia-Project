@@ -30,7 +30,7 @@
         
         <HBox spacing="10.0" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <TextField fx:id="titleSearchField" onAction="#handleSearch" 
-                       promptText="Search by title..." prefWidth="250.0" />
+                       promptText="Search by title or author..." prefWidth="250.0" />
             <Button text="Search" onAction="#handleSearch" 
                     style="-fx-base: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;" />
         </HBox>
@@ -56,38 +56,45 @@
                 <Label text="Choose a document from the list on the left to view or edit its contents." style="-fx-text-fill: #999999;" />
             </VBox>
 
+
             <VBox fx:id="documentDetailsBox" spacing="10.0" visible="false">
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
-                    <VBox>
-                        <Label fx:id="detailTitleLabel" text="Title" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                    <VBox spacing="2.0">
+                        <Label fx:id="detailTitleLabel" text="Title" style="-fx-font-weight: bold; -fx-font-size: 18px;" />
+                        
+                        <Label fx:id="detailCategoryLabel" text="Category: Unknown" style="-fx-text-fill: #2196F3; -fx-font-weight: bold;" />
+                        
                         <Label fx:id="detailAuthorLabel" text="Author Info" style="-fx-text-fill: #666;" />
                     </VBox>
+                    
                     <Region HBox.hgrow="ALWAYS" />
                     
-                    <Button fx:id="followButton" text="Follow" onAction="#handleFollow" 
-                            style="-fx-base: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;" />
-                            
-                    <Button fx:id="deleteDocumentButton" text="Delete" onAction="#handleDelete" 
-                            style="-fx-base: #d9534f; -fx-text-fill: white; -fx-font-weight: bold;" />
+                    <HBox spacing="5.0" alignment="TOP_RIGHT">
+                        <Button fx:id="followButton" text="Follow" onAction="#handleFollow" 
+                                style="-fx-base: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;" />
+                        <Button fx:id="deleteDocumentButton" text="Delete" onAction="#handleDelete" 
+                                style="-fx-base: #d9534f; -fx-text-fill: white; -fx-font-weight: bold;" />
+                    </HBox>
                 </HBox>
 
                 <Separator />
 
                 <HBox spacing="10.0" alignment="CENTER_LEFT">
-                    <Label text="Version:" />
+                    <Label text="Version Selection:" style="-fx-font-weight: bold;" />
                     <ComboBox fx:id="versionSelectorCombo" onAction="#handleVersionChange" prefWidth="80.0" />
-                    <Label fx:id="versionInfoLabel" text="V1 | 2024-01-01" style="-fx-font-style: italic;" />
+                    <Label fx:id="versionInfoLabel" text="2024-01-01" style="-fx-font-style: italic; -fx-text-fill: #888;" />
+                    
                     <Region HBox.hgrow="ALWAYS" />
                     
-                    <Button fx:id="editDocumentButton" text="Edit Mode" onAction="#handleEdit" 
+                    <Button fx:id="editDocumentButton" text="✎ Edit Mode" onAction="#handleEdit" 
                             style="-fx-font-weight: bold;" />
                 </HBox>
 
                 <TextArea fx:id="contentDisplayArea" VBox.vgrow="ALWAYS" wrapText="true" editable="false" 
-                          style="-fx-font-family: 'Monospaced'; -fx-font-size: 13px;" />
+                        style="-fx-font-family: 'Segoe UI', sans-serif; -fx-font-size: 14px; -fx-control-inner-background: #fafafa;" />
 
                 <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                    <Button fx:id="saveChangesButton" text="Save Changes" onAction="#handleSave" 
+                    <Button fx:id="saveChangesButton" text="Save New Version" onAction="#handleSave" 
                             style="-fx-base: #2e649d; -fx-text-fill: white; -fx-font-weight: bold;" visible="false" />
                 </HBox>
             </VBox>

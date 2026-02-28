@@ -24,7 +24,6 @@ public class FollowsController {
 
     private SystemState systemState;
     private User loggedInUser;
-
     private MainController mainController;
 
     public void setMainController(MainController mainController) {
@@ -35,11 +34,11 @@ public class FollowsController {
         this.systemState = state;
         this.loggedInUser = user;
 
-        // Ενεργοποίηση πολλαπλής επιλογής και για τις δύο λίστες
+        // Επιλογή πολλαπλών στοιχείων
         availableDocumentsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         followedDocumentsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
-        // --- ΝΕΟΣ ΚΩΔΙΚΑΣ: ΕΜΦΑΝΙΣΗ ΚΟΥΜΠΙΩΝ ΜΟΝΟ ΟΤΑΝ ΥΠΑΡΧΕΙ ΕΠΙΛΟΓΗ ---
+        // Listeners για την εμφάνιση των κουμπιών
         availableDocumentsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             addFollowButton.setVisible(newVal != null);
         });
@@ -47,36 +46,26 @@ public class FollowsController {
         followedDocumentsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             removeFollowButton.setVisible(newVal != null);
         });
-        // ------------------------------------------------------------------
 
+        setupCellFactories();
         loadLists();
+    }
 
-        // 1. Toggle Logic για τα Διαθέσιμα Έγγραφα (Available Documents)
+    private void setupCellFactories() {
+        // CellFactory για τα διαθέσιμα έγγραφα
         availableDocumentsListView.setCellFactory(lv -> {
             ListCell<Document> cell = new ListCell<Document>() {
                 @Override
                 protected void updateItem(Document item, boolean empty) {
                     super.updateItem(item, empty);
-                    setText(empty ? null : item.getTitle());
+                    setText(empty || item == null ? null : item.getTitle());
                 }
             };
-            
-            cell.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
-                if (!cell.isEmpty()) {
-                    availableDocumentsListView.requestFocus();
-                    int index = cell.getIndex();
-                    if (availableDocumentsListView.getSelectionModel().isSelected(index)) {
-                        availableDocumentsListView.getSelectionModel().clearSelection(index);
-                    } else {
-                        availableDocumentsListView.getSelectionModel().select(index);
-                    }
-                    event.consume();
-                }
-            });
+            setupClickFiltering(cell, availableDocumentsListView);
             return cell;
         });
 
-        // 2. Toggle Logic ΚΑΙ Cell Factory για τα Παρακολουθούμενα (Followed Documents)
+        // CellFactory για τα έγγραφα που ακολουθεί ο χρήστης
         followedDocumentsListView.setCellFactory(lv -> {
             ListCell<FollowEntry> cell = new ListCell<FollowEntry>() {
                 @Override
@@ -86,52 +75,54 @@ public class FollowsController {
                         setText(null);
                     } else {
                         Document doc = systemState.getDocumentManager().getDocumentById(item.getDocumentId());
-                        if (doc != null) {
-                            setText(doc.getTitle() + " (Last seen V" + item.getVersionAtFollow() + ")");
-                        } else {
-                            setText("Document ID: " + item.getDocumentId() + " (DELETED)");
-                        }
+                        // Εμφάνιση μόνο του τίτλου, χωρίς versions ή "DELETED"
+                        setText(doc != null ? doc.getTitle() : null);
                     }
                 }
             };
-
-            cell.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
-                if (!cell.isEmpty()) {
-                    followedDocumentsListView.requestFocus();
-                    int index = cell.getIndex();
-                    if (followedDocumentsListView.getSelectionModel().isSelected(index)) {
-                        followedDocumentsListView.getSelectionModel().clearSelection(index);
-                    } else {
-                        followedDocumentsListView.getSelectionModel().select(index);
-                    }
-                    event.consume();
-                }
-            });
+            setupClickFiltering(cell, followedDocumentsListView);
             return cell;
         });
     }
 
+    // Βοηθητική μέθοδος για το "toggle" selection με το ποντίκι
+    private <T> void setupClickFiltering(ListCell<T> cell, ListView<T> listView) {
+        cell.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
+            if (!cell.isEmpty()) {
+                listView.requestFocus();
+                int index = cell.getIndex();
+                if (listView.getSelectionModel().isSelected(index)) {
+                    listView.getSelectionModel().clearSelection(index);
+                } else {
+                    listView.getSelectionModel().select(index);
+                }
+                event.consume();
+            }
+        });
+    }
+
     public void loadLists() {
-        // 1. Φόρτωση παρακολουθούμενων εγγράφων (αυτά που ήδη ακολουθεί)
-        List<FollowEntry> userFollows = systemState.getFollowManager().getFollowsForUser(loggedInUser.getUsername());
-        followedDocumentsListView.setItems(FXCollections.observableArrayList(userFollows));
+        // 1. Φορτώνουμε τα follows και φιλτράρουμε ώστε να μείνουν ΜΟΝΟ τα υπαρκτά έγγραφα
+        List<FollowEntry> validFollows = systemState.getFollowManager()
+            .getFollowsForUser(loggedInUser.getUsername())
+            .stream()
+            .filter(entry -> systemState.getDocumentManager().getDocumentById(entry.getDocumentId()) != null)
+            .collect(Collectors.toList());
+
+        followedDocumentsListView.setItems(FXCollections.observableArrayList(validFollows));
         
-        // Λίστα με τα IDs των εγγράφων που ήδη παρακολουθούνται
-        List<String> followedIds = userFollows.stream()
+        // 2. IDs των εγγράφων που ήδη ακολουθούνται
+        List<String> followedIds = validFollows.stream()
             .map(FollowEntry::getDocumentId)
             .collect(Collectors.toList());
 
-        // 2. Φόρτωση διαθέσιμων εγγράφων για παρακολούθηση
+        // 3. Διαθέσιμα έγγραφα (όχι ακολουθούμενα και με δικαίωμα πρόσβασης)
         List<Document> availableDocs = systemState.getDocumentManager().getAllDocuments().stream()
             .filter(doc -> {
-                // Αν είναι Admin, έχει πρόσβαση στα ΠΑΝΤΑ
-                if (loggedInUser.getRole() == Role.Admin) {
-                    return true;
-                }
-                // Αν δεν είναι Admin, ελέγχουμε τις κατηγορίες του
+                if (loggedInUser.getRole() == Role.Admin) return true;
                 return loggedInUser.canAccessCategory(doc.getCategoryId());
             })
-            .filter(doc -> !followedIds.contains(doc.getDocumentId())) // Να μην το ακολουθεί ήδη
+            .filter(doc -> !followedIds.contains(doc.getDocumentId()))
             .collect(Collectors.toList());
 
         availableDocumentsListView.setItems(FXCollections.observableArrayList(availableDocs));
@@ -139,16 +130,10 @@ public class FollowsController {
 
     @FXML
     private void handleAddFollow() {
-        // Παίρνουμε όλα τα επιλεγμένα έγγραφα
         ObservableList<Document> selectedDocs = availableDocumentsListView.getSelectionModel().getSelectedItems();
-        
-        if (selectedDocs == null || selectedDocs.isEmpty()) {
-            showAlert("Warning", "Please select at least one document.", Alert.AlertType.WARNING);
-            return;
-        }
+        if (selectedDocs == null || selectedDocs.isEmpty()) return;
 
-        // Διατρέχουμε τη λίστα και προσθέτουμε follow για το καθένα
-        for (Document docToFollow : selectedDocs) {
+        for (Document docToFollow : new ArrayList<>(selectedDocs)) {
             int currentVersion = docToFollow.getLatestVersion().getVersionNumber();
             systemState.getFollowManager().addFollow(
                 loggedInUser.getUsername(),
@@ -157,54 +142,32 @@ public class FollowsController {
             );
         }
         
-        // Ενημέρωση του Summary στο Dashboard (MainController)
-        if (mainController != null) {
-            mainController.updateSummaryLabels();
-        }
-        
-        // Αλλαγή μηνύματος: "Following" αντί για "Tracking"
-        showAlert("Success", "Started following " + selectedDocs.size() + " documents.", Alert.AlertType.INFORMATION);
-        
-        loadLists(); // Ανανέωση των λιστών στο UI
-        
-        // --- ΝΕΟΣ ΚΩΔΙΚΑΣ: Κρύβουμε το κουμπί μετά την ενέργεια ---
-        addFollowButton.setVisible(false);
+        refreshUI("Started following the selected documents.");
     }
 
     @FXML
     private void handleRemoveFollow() {
         ObservableList<FollowEntry> selectedEntries = followedDocumentsListView.getSelectionModel().getSelectedItems();
-        
-        if (selectedEntries == null || selectedEntries.isEmpty()) {
-            showAlert("Warning", "Please select at least one followed document to unfollow.", Alert.AlertType.WARNING);
-            return;
-        }
+        if (selectedEntries == null || selectedEntries.isEmpty()) return;
 
-        // Κρατάμε το πλήθος για το μήνυμα επιτυχίας
-        int count = selectedEntries.size();
-
-        // Φτιάχνουμε αντίγραφο για ασφαλή διαγραφή
-        List<FollowEntry> toRemove = new ArrayList<>(selectedEntries);
-
-        for (FollowEntry entry : toRemove) {
+        for (FollowEntry entry : new ArrayList<>(selectedEntries)) {
             systemState.getFollowManager().removeFollow(
                 loggedInUser.getUsername(),
                 entry.getDocumentId()
             );
         }
 
-        // Ενημέρωση του Summary στο αριστερό panel
+        refreshUI("Stopped following the selected documents.");
+    }
+
+    private void refreshUI(String successMessage) {
         if (mainController != null) {
             mainController.updateSummaryLabels();
         }
-        
-        // Αλλαγή μηνύματος: "Following" αντί για "Tracking"
-        showAlert("Success", "Stopped following " + count + " documents.", Alert.AlertType.INFORMATION);
-        
-        loadLists(); // Ανανέωση των λιστών στο UI
-        
-        // --- ΝΕΟΣ ΚΩΔΙΚΑΣ: Κρύβουμε το κουμπί μετά την ενέργεια ---
+        loadLists();
+        addFollowButton.setVisible(false);
         removeFollowButton.setVisible(false);
+        showAlert("Success", successMessage, Alert.AlertType.INFORMATION);
     }
     
     private void showAlert(String title, String message, Alert.AlertType type) {
@@ -212,6 +175,9 @@ public class FollowsController {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+        if (availableDocumentsListView.getScene() != null) {
+            alert.initOwner(availableDocumentsListView.getScene().getWindow());
+        }
         alert.showAndWait();
     }
 }

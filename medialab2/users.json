@@ -1,0 +1,14 @@
+[
+  {
+    "userid": 1,
+    "username": "medialab",
+    "password": "medialab_2025",
+    "firstName": "Default",
+    "lastName": "Admin",
+    "role": "Admin",
+    "accessCategoryIds": [
+      1,
+      2
+    ]
+  }
+]

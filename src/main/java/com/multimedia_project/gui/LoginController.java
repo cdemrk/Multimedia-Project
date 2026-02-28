@@ -7,9 +7,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Optional;
 
 public class LoginController {
 
@@ -18,7 +18,6 @@ public class LoginController {
     
     private SystemState systemState;
     
-    // Χρησιμοποιείται από την MainApp για να περάσει την κατάσταση
     public void setSystemState(SystemState state) {
         this.systemState = state;
     }
@@ -28,32 +27,32 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
         
-        // Έλεγχος Αυθεντικοποίησης
         User loggedInUser = systemState.getUserManager().authenticate(username, password);
         
-        if (loggedInUser != null){
-            System.out.println("Login successful for user: " + loggedInUser.getUsername()); // ΕΠΙΤΥΧΙΑ: Φόρτωση Main View
+        if (loggedInUser != null) {
+            System.out.println("Login successful for user: " + loggedInUser.getUsername());
             
             try {
-                // 2. Φόρτωση Κεντρικού Παραθύρου
+                Stage currentStage = (Stage) usernameField.getScene().getWindow();
+                currentStage.close();
                 MainApp.showMainView(loggedInUser);
-                
-                // 3. Εμφάνιση ειδοποίησης για παρακολουθήσεις (λογική που θα προστεθεί στον MainController)
-                // Εδώ θα καλούσατε τον FollowManager για να ελέγξει αν υπάρχουν νέα versions
-                
             } catch (IOException e) {
                 e.printStackTrace();
                 showAlert("Error", "Could not load main application view.", Alert.AlertType.ERROR);
             }
             
         } else {
-            // Αποτυχία σύνδεσης
             showAlert("Login Failed", "Invalid username or password.", Alert.AlertType.ERROR);
         }
     }
 
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
+        
+        if (usernameField.getScene() != null && usernameField.getScene().getWindow() != null) {
+            alert.initOwner(usernameField.getScene().getWindow());
+        }
+        
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

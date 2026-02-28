@@ -1,40 +1,82 @@
 {
-  "simple_user": [
+  "mkopanou": [
     {
       "documentId": "1",
-      "versionAtFollow": 10
+      "versionAtFollow": 1
     },
     {
       "documentId": "6",
-      "versionAtFollow": 2
+      "versionAtFollow": 6
     }
   ],
-  "admin": [
+  "apapad": [
     {
-      "documentId": "1",
-      "versionAtFollow": 10
-    },
+      "documentId": "9",
+      "versionAtFollow": 7
+    }
+  ],
+  "morfanou": [
     {
       "documentId": "6",
+      "versionAtFollow": 6
+    },
+    {
+      "documentId": "7",
       "versionAtFollow": 2
-    },
-    {
-      "documentId": "5",
-      "versionAtFollow": 3
-    },
-    {
-      "documentId": "8",
-      "versionAtFollow": 1
     },
     {
       "documentId": "10",
       "versionAtFollow": 2
     }
   ],
-  "author_user": [
+  "gkyriakop": [
+    {
+      "documentId": "10",
+      "versionAtFollow": 2
+    },
+    {
+      "documentId": "6",
+      "versionAtFollow": 6
+    },
+    {
+      "documentId": "11",
+      "versionAtFollow": 1
+    }
+  ],
+  "medialab": [
     {
       "documentId": "1",
-      "versionAtFollow": 8
+      "versionAtFollow": 1
+    },
+    {
+      "documentId": "2",
+      "versionAtFollow": 2
+    },
+    {
+      "documentId": "9",
+      "versionAtFollow": 7
+    },
+    {
+      "documentId": "10",
+      "versionAtFollow": 2
+    }
+  ],
+  "dmarkatou": [
+    {
+      "documentId": "1",
+      "versionAtFollow": 1
+    },
+    {
+      "documentId": "6",
+      "versionAtFollow": 6
+    },
+    {
+      "documentId": "7",
+      "versionAtFollow": 2
+    },
+    {
+      "documentId": "11",
+      "versionAtFollow": 2
     }
   ]
 }

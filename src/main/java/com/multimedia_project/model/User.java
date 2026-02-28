@@ -6,21 +6,20 @@ import java.util.List;
 public class User {
     private int userid;
     private String username;
-    private String password; // Θα έπρεπε να είναι hashed στην πραγματικότητα
+    private String password;
     private String firstName;
     private String lastName;
     private Role role;
     private List<Integer> accessCategoryIds;
     
-    // Constructor, Getters και Setters
     public User(int userid, String username, String password, String firstName, String lastName, Role role, List<Integer> accessCategoryIds) {
-        this.userid = userid; // Προσθήκη εδώ
+        this.userid = userid;
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
-        this.accessCategoryIds = (accessCategoryIds != null) ? accessCategoryIds : new ArrayList<>();
+        this.accessCategoryIds = (accessCategoryIds != null) ? new ArrayList<>(accessCategoryIds) : new ArrayList<>();
     }
 
     public int getId() { return userid; }
@@ -29,20 +28,13 @@ public class User {
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
     public Role getRole() { return role; }
-    public List<Integer> getAccessCategoryIds() { return accessCategoryIds; }
 
-    // Μέθοδος για έλεγχο δικαιωμάτων
     public boolean canAccessCategory(int categoryId) {
-        return accessCategoryIds.contains(categoryId);
-    }
-
-    @Override
-    public String toString() {
-        // Επιστρέφει το όνομα και το επώνυμο (π.χ. "Chris Papadopoulos")
-        if (firstName != null && lastName != null && !firstName.isEmpty()) {
-            return firstName + " " + lastName + " (" + username + ")";
+        // 
+        if (this.role == Role.Admin) {
+            return true;
         }
-        return username; 
+        return accessCategoryIds != null && accessCategoryIds.contains(categoryId);
     }
 
     public List<Integer> getAccessibleCategoryIds() {
@@ -54,5 +46,13 @@ public class User {
 
     public void setId(int userid) {
         this.userid = userid;
+    }
+
+    @Override
+    public String toString() {
+        if (firstName != null && lastName != null && !firstName.isEmpty()) {
+            return firstName + " " + lastName + " (" + username + ") - " + role;
+        }
+        return username + " (" + role + ")"; 
     }
 }

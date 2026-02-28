@@ -17,22 +17,20 @@ import java.util.stream.Collectors;
 
 public class UnifiedDocumentController {
 
-    // --- SEARCH SECTION ---
     @FXML private ComboBox<Category> categorySearchCombo;
     @FXML private TextField titleSearchField;
     @FXML private ListView<Document> documentListView;
 
-    // --- DISPLAY SECTION ---
-    @FXML private VBox placeholderBox;      // Το κεντραρισμένο μήνυμα
-    @FXML private VBox documentDetailsBox;  // Το κουτί με τα πραγματικά δεδομένα
+    @FXML private VBox placeholderBox;
+    @FXML private VBox documentDetailsBox;
     
     @FXML private Label detailTitleLabel;
     @FXML private Label detailAuthorLabel;
     @FXML private Label versionInfoLabel;
+    @FXML private Label detailCategoryLabel;
     @FXML private ComboBox<Integer> versionSelectorCombo;
     @FXML private TextArea contentDisplayArea;
 
-    // --- ACTION BUTTONS ---
     @FXML private Button followButton;
     @FXML private Button newDocumentButton;
     @FXML private Button editDocumentButton;
@@ -54,7 +52,7 @@ public class UnifiedDocumentController {
         setupListView();
         
         handleSearch();
-        clearDetails(); // Εμφανίζει το ωραίο Empty State στην αρχή!
+        clearDetails();
     }
 
     public void setMainController(MainController mainController) {
@@ -105,7 +103,7 @@ public class UnifiedDocumentController {
     @FXML
     public void handleSearch() {
         Category selectedCat = categorySearchCombo.getValue();
-        String titleQuery = titleSearchField.getText().trim().toLowerCase();
+        String searchQuery = titleSearchField.getText().trim().toLowerCase();
 
         List<Document> filtered = systemState.getDocumentManager().getAllDocuments().stream()
                 .filter(doc -> {
@@ -113,7 +111,14 @@ public class UnifiedDocumentController {
                     return loggedInUser.canAccessCategory(doc.getCategoryId());
                 })
                 .filter(doc -> selectedCat == null || selectedCat.getId() == 0 || doc.getCategoryId() == selectedCat.getId())
-                .filter(doc -> titleQuery.isEmpty() || doc.getTitle().toLowerCase().contains(titleQuery))
+                .filter(doc -> {
+                    if (searchQuery.isEmpty()) return true;
+                    
+                    boolean matchesTitle = doc.getTitle().toLowerCase().contains(searchQuery);
+                    boolean matchesAuthor = doc.getAuthorName().toLowerCase().contains(searchQuery);
+                    
+                    return matchesTitle || matchesAuthor;
+                })
                 .collect(Collectors.toList());
 
         documentListView.setItems(FXCollections.observableArrayList(filtered));
@@ -125,7 +130,6 @@ public class UnifiedDocumentController {
             return;
         }
         
-        // 1. ΕΜΦΑΝΙΣΗ ΤΟΥ ΕΓΓΡΑΦΟΥ & ΑΠΟΚΡΥΨΗ ΤΟΥ PLACEHOLDER
         if (placeholderBox != null) placeholderBox.setVisible(false);
         if (documentDetailsBox != null) documentDetailsBox.setVisible(true);
 
@@ -134,9 +138,21 @@ public class UnifiedDocumentController {
         contentDisplayArea.setEditable(false);
         saveChangesButton.setVisible(false);
 
-        // 2. Βασικές Πληροφορίες
         detailTitleLabel.setText(doc.getTitle());
-        detailAuthorLabel.setText("Author: " + doc.getAuthorName());
+        
+        Category cat = systemState.getCategoryManager().getCategoryById(doc.getCategoryId());
+        String categoryName = (cat != null) ? cat.getName() : "Unknown Category";
+        if (detailCategoryLabel != null) {
+            detailCategoryLabel.setText("Category: " + categoryName);
+        }
+
+        String creationDate = doc.getVersions().stream()
+                .filter(v -> v.getVersionNumber() == 1)
+                .findFirst()
+                .map(v -> v.getCreationDate().toLocalDate().toString())
+                .orElse("N/A");
+
+        detailAuthorLabel.setText("Author: " + doc.getAuthorName() + " | Created: " + creationDate);
 
         updateFollowButtonState();
         setupVersionControl(doc);
@@ -144,8 +160,8 @@ public class UnifiedDocumentController {
         boolean canModify = (loggedInUser.getRole() == Role.Admin) || 
                             (loggedInUser.getRole() == Role.Author && loggedInUser.canAccessCategory(doc.getCategoryId()));
         
-        editDocumentButton.setDisable(!canModify);
-        deleteDocumentButton.setDisable(!canModify);
+        if (editDocumentButton != null) editDocumentButton.setDisable(!canModify);
+        if (deleteDocumentButton != null) deleteDocumentButton.setDisable(!canModify);
 
         updateDisplay(doc.getLatestVersion());
     }
@@ -160,7 +176,7 @@ public class UnifiedDocumentController {
             allowedNums = allVers.stream()
                     .map(DocumentVersion::getVersionNumber)
                     .sorted(Comparator.reverseOrder())
-                    .limit(5)
+                    .limit(3)
                     .sorted()
                     .collect(Collectors.toList());
         } else {
@@ -173,20 +189,47 @@ public class UnifiedDocumentController {
     }
 
     private void updateFollowButtonState() {
+        if (selectedDocument == null) return;
+        
         boolean isFollowing = systemState.getFollowManager().isFollowing(loggedInUser.getUsername(), selectedDocument.getDocumentId());
-        followButton.setText(isFollowing ? "Already Following" : "Follow Document");
-        followButton.setDisable(isFollowing);
+        
+        if (isFollowing) {
+            followButton.setText("Unfollow Document");
+            followButton.setStyle("-fx-base: #d9534f; -fx-text-fill: white; -fx-font-weight: bold;"); 
+        } else {
+            followButton.setText("Follow Document");
+            followButton.setStyle("-fx-base: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;");
+        }
+        
+        followButton.setDisable(false);
     }
 
     @FXML
     public void handleFollow() {
         if (selectedDocument == null) return;
         
-        systemState.getFollowManager().addFollow(
-                loggedInUser.getUsername(),
-                selectedDocument.getDocumentId(),
-                selectedDocument.getLatestVersion().getVersionNumber()
-        );
+        String username = loggedInUser.getUsername();
+        String docId = selectedDocument.getDocumentId();
+        boolean isFollowing = systemState.getFollowManager().isFollowing(username, docId);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Update");
+        alert.setHeaderText(null);
+        if (documentListView.getScene() != null) {
+            alert.initOwner(documentListView.getScene().getWindow());
+        }
+
+        if (isFollowing) {
+            systemState.getFollowManager().removeFollow(username, docId);
+            alert.setContentText("Stopped following: " + selectedDocument.getTitle());
+        } else {
+            systemState.getFollowManager().addFollow(
+                    username,
+                    docId,
+                    selectedDocument.getLatestVersion().getVersionNumber()
+            );
+            alert.setContentText("Successfully followed: " + selectedDocument.getTitle());
+        }
         
         updateFollowButtonState();
 
@@ -194,7 +237,7 @@ public class UnifiedDocumentController {
             mainController.updateSummaryLabels();
         }
         
-        new Alert(Alert.AlertType.INFORMATION, "Following " + selectedDocument.getTitle()).show();
+        alert.showAndWait();
     }
 
     @FXML
@@ -208,7 +251,7 @@ public class UnifiedDocumentController {
 
     private void updateDisplay(DocumentVersion v) {
         contentDisplayArea.setText(v.getContent());
-        versionInfoLabel.setText("V" + v.getVersionNumber() + " | " + v.getCreationDate().toLocalDate());
+        versionInfoLabel.setText(v.getCreationDate().toLocalDate().toString());
     }
 
     @FXML
@@ -315,7 +358,17 @@ public class UnifiedDocumentController {
             }
 
             showDocumentDetails(selectedDocument);
-            new Alert(Alert.AlertType.INFORMATION, "New version created!").show();
+            
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText("New version created successfully!");
+            
+            if (documentListView.getScene() != null) {
+                alert.initOwner(documentListView.getScene().getWindow());
+            }
+            
+            alert.showAndWait();
         }
     }
 
@@ -335,16 +388,28 @@ public class UnifiedDocumentController {
     
     private void clearDetails() {
         selectedDocument = null;
+        isEditing = false;
         
-        // 1. ΕΜΦΑΝΙΣΗ ΤΟΥ PLACEHOLDER & ΑΠΟΚΡΥΨΗ ΤΟΥ ΕΓΓΡΑΦΟΥ
         if (placeholderBox != null) placeholderBox.setVisible(true);
         if (documentDetailsBox != null) documentDetailsBox.setVisible(false);
         
         if (detailTitleLabel != null) detailTitleLabel.setText("");
         if (detailAuthorLabel != null) detailAuthorLabel.setText("");
-        if (contentDisplayArea != null) contentDisplayArea.setText("");
-        if (versionSelectorCombo != null) versionSelectorCombo.getItems().clear();
+        if (detailCategoryLabel != null) detailCategoryLabel.setText("");
+        if (versionInfoLabel != null) versionInfoLabel.setText("");
+        
+        if (contentDisplayArea != null) {
+            contentDisplayArea.setText("");
+            contentDisplayArea.setEditable(false);
+        }
+        
+        if (versionSelectorCombo != null) {
+            versionSelectorCombo.getItems().clear();
+            versionSelectorCombo.setDisable(true);
+        }
+        
         if (editDocumentButton != null) editDocumentButton.setDisable(true);
         if (deleteDocumentButton != null) deleteDocumentButton.setDisable(true);
+        if (saveChangesButton != null) saveChangesButton.setVisible(false);
     }
 }

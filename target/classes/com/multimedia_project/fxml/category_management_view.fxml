@@ -18,7 +18,7 @@
                 style="-fx-base: #5cb85c; -fx-text-fill: white; -fx-font-weight: bold;" />
     </HBox>
     
-    <Label text="System Categories:" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+    <Label text="Categories" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
     <ListView fx:id="categoryListView" VBox.vgrow="ALWAYS" />
     
     <HBox spacing="10.0" alignment="CENTER_RIGHT">

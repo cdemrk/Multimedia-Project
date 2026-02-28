@@ -1,211 +1,231 @@
 [
   {
     "documentId": "1",
-    "title": "Introduction to JavaFX GUI",
-    "authorName": "Despoina Markatou",
-    "authorId": 2,
-    "categoryId": 1,
+    "title": "Euclidean Geometry",
+    "authorName": "Default Admin",
+    "authorId": 1,
+    "categoryId": 3,
     "versions": [
       {
         "versionNumber": 1,
-        "creationDate": "2025-01-20T10:00:00",
-        "content": "This is the initial text about JavaFX. We will explore FXML here.\n\nParagraph 2: Initial thoughts."
-      },
-      {
-        "versionNumber": 2,
-        "creationDate": "2025-11-19T14:30:00",
-        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules."
-      },
-      {
-        "versionNumber": 3,
-        "creationDate": "2025-11-25T23:12:47.371922",
-        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nNewwww"
-      },
-      {
-        "versionNumber": 4,
-        "creationDate": "2025-11-25T23:27:08.0579497",
-        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nNew\nNew"
-      },
-      {
-        "versionNumber": 5,
-        "creationDate": "2026-02-17T12:41:00.2152027",
-        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nNew\nNe"
-      },
-      {
-        "versionNumber": 6,
-        "creationDate": "2026-02-18T01:10:56.2996508",
-        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nversion 5"
-      },
-      {
-        "versionNumber": 7,
-        "creationDate": "2026-02-25T02:15:30.8543183",
-        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nversion 7"
-      },
-      {
-        "versionNumber": 8,
-        "creationDate": "2026-02-25T02:34:39.046106",
-        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nversion 8"
-      },
-      {
-        "versionNumber": 9,
-        "creationDate": "2026-02-25T02:35:35.9599234",
-        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nversion 9"
-      },
-      {
-        "versionNumber": 10,
-        "creationDate": "2026-02-25T02:36:24.8666156",
-        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nversion 10"
+        "creationDate": "2026-02-28T20:20:27.304054",
+        "content": "Euclidean geometry is a mathematical system attributed to Alexandrian Greek mathematician Euclid, which he described in his textbook: the Elements. Euclid\u0027s method consists in assuming a small set of intuitively appealing axioms, and deducing many other propositions from these.\n\nThe fundamental concepts include points, lines, planes, and angles. According to the first axiom, a straight line segment can be drawn joining any two points. This simple foundation allows for the construction of complex geometric shapes and the derivation of the Pythagorean theorem.\n\nIn modern times, Euclidean geometry remains the basis for architectural design and classical physics, providing the necessary framework for understanding the space we inhabit."
       }
     ]
   },
   {
     "documentId": "2",
-    "title": "Advanced Python Tips",
-    "authorName": "Despoina Markatou",
-    "authorId": 2,
-    "categoryId": 3,
+    "title": "The Social Contract: Rights and Obligations",
+    "authorName": "Athanasios Papadopoulos",
+    "authorId": 5,
+    "categoryId": 4,
     "versions": [
       {
         "versionNumber": 1,
-        "creationDate": "2026-02-16T16:00:00",
-        "content": "Deep dive into decorators, generators, and context managers."
+        "creationDate": "2026-02-28T22:08:15.2354378",
+        "content": "The social contract is a theory or model that originated during the Age of Enlightenment and usually concerns the legitimacy of the authority of the state over the individual. It posits that individuals have consented, either explicitly or tacitly, to surrender some of their freedoms to a ruler in exchange for protection of their remaining rights."
+      },
+      {
+        "versionNumber": 2,
+        "creationDate": "2026-02-28T23:07:32.47456",
+        "content": "The social contract is a theory or model that originated during the Age of Enlightenment and usually concerns the legitimacy of the authority of the state over the individual. It posits that individuals have consented, either explicitly or tacitly, to surrender some of their freedoms to a ruler in exchange for protection of their remaining rights.\n\nThomas Hobbes, John Locke, and Jean-Jacques Rousseau are the most famous philosophers associated with this concept. While Hobbes argued for absolute sovereignty to avoid \u0027the war of all against all\u0027, Locke emphasized that the government\u0027s power is limited and based on the consent of the governed.\n\nThis philosophical framework continues to influence modern democratic systems and the ongoing debate regarding the balance between national security and personal privacy."
       }
     ]
   },
   {
     "documentId": "3",
-    "title": "SQL Optimization Guide",
-    "authorName": "simple",
-    "authorId": 4,
+    "title": "Principles of Euclidean Geometry",
+    "authorName": "Anna Apostolaki",
+    "authorId": 6,
     "categoryId": 3,
     "versions": [
       {
         "versionNumber": 1,
-        "creationDate": "2026-02-16T16:15:00",
-        "content": "How to use indexes and explain plans to speed up your queries."
+        "creationDate": "2026-02-28T22:10:40.6775864",
+        "content": "Euclidean geometry is a mathematical system attributed to Alexandrian Greek mathematician Euclid, which he described in his textbook: the Elements. Euclid\u0027s method consists in assuming a small set of intuitively appealing axioms, and deducing many other propositions from these.\n\nThe fundamental concepts include points, lines, planes, and angles. According to the first axiom, a straight line segment can be drawn joining any two points. This simple foundation allows for the construction of complex geometric shapes and the derivation of the Pythagorean theorem."
+      },
+      {
+        "versionNumber": 2,
+        "creationDate": "2026-02-28T22:11:12.800216",
+        "content": "Euclidean geometry is a mathematical system attributed to Alexandrian Greek mathematician Euclid, which he described in his textbook: the Elements. Euclid\u0027s method consists in assuming a small set of intuitively appealing axioms, and deducing many other propositions from these.\n\nThe fundamental concepts include points, lines, planes, and angles. According to the first axiom, a straight line segment can be drawn joining any two points. This simple foundation allows for the construction of complex geometric shapes and the derivation of the Pythagorean theorem.\n\nIn modern times, Euclidean geometry remains the basis for architectural design and classical physics, providing the necessary framework for understanding the space we inhabit."
       }
     ]
   },
   {
     "documentId": "4",
-    "title": "New doc",
-    "authorName": "author_user",
-    "authorId": 2,
-    "categoryId": 3,
+    "title": "Introduction to Quantum Mechanics",
+    "authorName": "Anna Apostolaki",
+    "authorId": 6,
+    "categoryId": 2,
     "versions": [
       {
         "versionNumber": 1,
-        "creationDate": "2026-02-17T17:40:43.4949459",
-        "content": "Initial content..."
+        "creationDate": "2026-02-28T22:11:36.4063954",
+        "content": "Quantum mechanics is a fundamental theory in physics that provides a description of the physical properties of nature at the scale of atoms and subatomic particles. It is the foundation of all quantum physics including quantum chemistry and quantum field theory."
       },
       {
         "versionNumber": 2,
-        "creationDate": "2026-02-17T17:41:10.5560615",
-        "content": "hello"
-      }
-    ]
-  },
-  {
-    "documentId": "5",
-    "title": "programming",
-    "authorName": "author_user",
-    "authorId": 2,
-    "categoryId": 1,
-    "versions": [
-      {
-        "versionNumber": 1,
-        "creationDate": "2026-02-17T21:18:48.7474215",
-        "content": ""
-      },
-      {
-        "versionNumber": 2,
-        "creationDate": "2026-02-17T21:18:58.6413865",
-        "content": "prog"
+        "creationDate": "2026-02-28T22:11:43.9429761",
+        "content": "Quantum mechanics is a fundamental theory in physics that provides a description of the physical properties of nature at the scale of atoms and subatomic particles. It is the foundation of all quantum physics including quantum chemistry and quantum field theory.\n\nOne of the most striking features of this theory is wave-particle duality, which states that every particle or quantum entity may be described as either a particle or a wave. This leads to the Uncertainty Principle, formulated by Werner Heisenberg, asserting that the position and velocity of an object cannot both be measured exactly at the same time."
       },
       {
         "versionNumber": 3,
-        "creationDate": "2026-02-25T02:35:43.4742551",
-        "content": "prog3"
+        "creationDate": "2026-02-28T22:11:53.9654462",
+        "content": "Quantum mechanics is a fundamental theory in physics that provides a description of the physical properties of nature at the scale of atoms and subatomic particles. It is the foundation of all quantum physics including quantum chemistry and quantum field theory.\n\nOne of the most striking features of this theory is wave-particle duality, which states that every particle or quantum entity may be described as either a particle or a wave. This leads to the Uncertainty Principle, formulated by Werner Heisenberg, asserting that the position and velocity of an object cannot both be measured exactly at the same time.\n\nThese concepts challenge our classical intuition but have led to the development of vital technologies, such as transistors, lasers, and magnetic resonance imaging (MRI)."
       }
     ]
   },
   {
     "documentId": "6",
-    "title": "test",
-    "authorName": "admin",
-    "authorId": 5,
+    "title": "The Role of Prime Numbers in Modern Cryptography",
+    "authorName": "Default Admin",
+    "authorId": 1,
+    "categoryId": 3,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2026-02-28T22:14:11.273303",
+        "content": "Prime numbers, defined as natural numbers greater than 1 that have no positive divisors other than 1 and themselves, have fascinated mathematicians since the time of the ancient Greeks."
+      },
+      {
+        "versionNumber": 2,
+        "creationDate": "2026-02-28T22:14:21.0587703",
+        "content": "Prime numbers, defined as natural numbers greater than 1 that have no positive divisors other than 1 and themselves, have fascinated mathematicians since the time of the ancient Greeks. For centuries, the study of primes was considered a branch of pure mathematics with little practical application."
+      },
+      {
+        "versionNumber": 3,
+        "creationDate": "2026-02-28T22:14:39.5364437",
+        "content": "Prime numbers, defined as natural numbers greater than 1 that have no positive divisors other than 1 and themselves, have fascinated mathematicians since the time of the ancient Greeks. For centuries, the study of primes was considered a branch of pure mathematics with little practical application.\n\nEverything changed with the advent of the digital age and the development of public-key cryptography. The RSA algorithm, named after Rivest, Shamir, and Adleman, relies on the practical difficulty of factoring the product of two large prime numbers."
+      },
+      {
+        "versionNumber": 4,
+        "creationDate": "2026-02-28T22:14:48.6335061",
+        "content": "Prime numbers, defined as natural numbers greater than 1 that have no positive divisors other than 1 and themselves, have fascinated mathematicians since the time of the ancient Greeks. For centuries, the study of primes was considered a branch of pure mathematics with little practical application.\n\nEverything changed with the advent of the digital age and the development of public-key cryptography. The RSA algorithm, named after Rivest, Shamir, and Adleman, relies on the practical difficulty of factoring the product of two large prime numbers. While multiplying two large primes is computationally simple, reversing the process—factoring the resulting giant number—is nearly impossible with current technology."
+      },
+      {
+        "versionNumber": 5,
+        "creationDate": "2026-02-28T22:14:58.0188431",
+        "content": "Prime numbers, defined as natural numbers greater than 1 that have no positive divisors other than 1 and themselves, have fascinated mathematicians since the time of the ancient Greeks. For centuries, the study of primes was considered a branch of pure mathematics with little practical application.\n\nEverything changed with the advent of the digital age and the development of public-key cryptography. The RSA algorithm, named after Rivest, Shamir, and Adleman, relies on the practical difficulty of factoring the product of two large prime numbers. While multiplying two large primes is computationally simple, reversing the process—factoring the resulting giant number—is nearly impossible with current technology.\n\nThis mathematical property serves as the \u0027trapdoor\u0027 that secures global financial transactions, encrypted communications, and digital signatures."
+      },
+      {
+        "versionNumber": 6,
+        "creationDate": "2026-02-28T22:15:08.7606717",
+        "content": "Prime numbers, defined as natural numbers greater than 1 that have no positive divisors other than 1 and themselves, have fascinated mathematicians since the time of the ancient Greeks. For centuries, the study of primes was considered a branch of pure mathematics with little practical application.\n\nEverything changed with the advent of the digital age and the development of public-key cryptography. The RSA algorithm, named after Rivest, Shamir, and Adleman, relies on the practical difficulty of factoring the product of two large prime numbers. While multiplying two large primes is computationally simple, reversing the process—factoring the resulting giant number—is nearly impossible with current technology.\n\nThis mathematical property serves as the \u0027trapdoor\u0027 that secures global financial transactions, encrypted communications, and digital signatures. As quantum computing advances, the search for new mathematical foundations for cryptography remains one of the most active fields in contemporary research."
+      }
+    ]
+  },
+  {
+    "documentId": "7",
+    "title": "Software Design Patterns in Java",
+    "authorName": "Anna Apostolaki",
+    "authorId": 6,
     "categoryId": 1,
     "versions": [
       {
         "versionNumber": 1,
-        "creationDate": "2026-02-23T23:04:13.124322",
-        "content": "test"
+        "creationDate": "2026-02-28T22:16:45.777736",
+        "content": "In software engineering, a design pattern is a general, reusable solution to a commonly occurring problem within a given context in software design. It is not a finished design that can be transformed directly into source or machine code.\n\nThe \u0027Gang of Four\u0027 patterns are generally divided into three categories: Creational, Structural, and Behavioral. For instance, the Singleton pattern ensures a class has only one instance, while the Factory pattern deals with the problem of creating objects without specifying the exact class of object that will be created."
       },
       {
         "versionNumber": 2,
-        "creationDate": "2026-02-25T02:36:31.5207646",
-        "content": "test2"
+        "creationDate": "2026-02-28T22:16:52.9963189",
+        "content": "In software engineering, a design pattern is a general, reusable solution to a commonly occurring problem within a given context in software design. It is not a finished design that can be transformed directly into source or machine code.\n\nThe \u0027Gang of Four\u0027 patterns are generally divided into three categories: Creational, Structural, and Behavioral. For instance, the Singleton pattern ensures a class has only one instance, while the Factory pattern deals with the problem of creating objects without specifying the exact class of object that will be created.\n\nBehavioral patterns, such as the Observer pattern, define how objects communicate. This is particularly useful in JavaFX, where a UI component might need to \u0027observe\u0027 changes in a data model and update itself automatically."
       }
     ]
   },
   {
     "documentId": "8",
-    "title": "eeee",
-    "authorName": "admin",
-    "authorId": 5,
-    "categoryId": 1,
+    "title": "Einstein\u0027s General Theory of Relativity",
+    "authorName": "Anna Apostolaki",
+    "authorId": 6,
+    "categoryId": 2,
     "versions": [
       {
         "versionNumber": 1,
-        "creationDate": "2026-02-23T23:27:50.0634987",
-        "content": "eeeee"
+        "creationDate": "2026-02-28T22:17:22.0332495",
+        "content": "General relativity is the geometric theory of gravitation published by Albert Einstein in 1915. It remains the current description of gravitation in modern physics, generalizing special relativity and Newton\u0027s law of universal gravitation to provide a unified description of gravity as a geometric property of space and time, or spacetime.\n\nAccording to Einstein, massive objects cause a curvature in spacetime, which is experienced as gravity. Rather than being an invisible force pulling objects toward each other, gravity is the result of objects following the shortest path (geodesics) through a curved four-dimensional fabric. As Wheeler famously put it: \u0027Spacetime tells matter how to move; matter tells spacetime how to curve.\u0027\n\nThe predictions of general relativity, such as the bending of light around massive stars and the existence of black holes, have been confirmed by a century of observational data. Most recently, the detection of gravitational waves—ripples in the fabric of spacetime caused by massive cosmic collisions—has opened a new window into observing the universe."
       }
     ]
   },
   {
     "documentId": "9",
-    "title": "sssssssss",
-    "authorName": "admin",
+    "title": "The Fundamentals of Existentialist Thought",
+    "authorName": "Athanasios Papadopoulos",
     "authorId": 5,
-    "categoryId": 1,
+    "categoryId": 4,
     "versions": [
       {
         "versionNumber": 1,
-        "creationDate": "2026-02-23T23:29:35.9352539",
-        "content": "sssssssssssss"
+        "creationDate": "2026-02-28T22:18:40.9707792",
+        "content": "Existentialism is a philosophical inquiry that explores the nature of the human condition, focusing on the experience of the individual as a self-determining agent. It suggests that individuals are entirely free and, therefore, responsible for what they make of themselves. With this responsibility comes a profound sense of angst or dread, as there is no pre-determined \u0027essence\u0027 to guide human life."
+      },
+      {
+        "versionNumber": 2,
+        "creationDate": "2026-02-28T22:18:49.7573932",
+        "content": "Existentialism is a philosophical inquiry that explores the nature of the human condition, focusing on the experience of the individual as a self-determining agent. It suggests that individuals are entirely free and, therefore, responsible for what they make of themselves. With this responsibility comes a profound sense of angst or dread, as there is no pre-determined \u0027essence\u0027 to guide human life.\n\nThe famous dictum \u0027existence precedes essence\u0027, coined by Jean-Paul Sartre, encapsulates this movement. It argues that humans first exist, encounter themselves, surge up in the world, and define themselves afterwards. Unlike a tool, such as a paperknife, which is designed with a specific purpose in mind, a human being begins as nothing and becomes what they choose to be through their actions."
+      },
+      {
+        "versionNumber": 3,
+        "creationDate": "2026-02-28T22:18:58.8772038",
+        "content": "Existentialism is a philosophical inquiry that explores the nature of the human condition, focusing on the experience of the individual as a self-determining agent. It suggests that individuals are entirely free and, therefore, responsible for what they make of themselves. With this responsibility comes a profound sense of angst or dread, as there is no pre-determined \u0027essence\u0027 to guide human life.\n\nThe famous dictum \u0027existence precedes essence\u0027, coined by Jean-Paul Sartre, encapsulates this movement. It argues that humans first exist, encounter themselves, surge up in the world, and define themselves afterwards. Unlike a tool, such as a paperknife, which is designed with a specific purpose in mind, a human being begins as nothing and becomes what they choose to be through their actions.\n\nThis emphasis on radical freedom and personal authenticity has deeply influenced literature, psychology, and theology. Philosophers like Albert Camus added the layer of \u0027The Absurd\u0027, suggesting that while humans naturally search for inherent meaning in life, the universe remains indifferently silent, forcing the individual to create their own meaning."
+      },
+      {
+        "versionNumber": 4,
+        "creationDate": "2026-02-28T23:12:32.99621",
+        "content": "Existentialism is a philosophical inquiry that explores the nature of the human condition, focusing on the experience of the individual as a self-determining agent. It suggests that individuals are entirely free and, therefore, responsible for what they make of themselves. With this responsibility comes a profound sense of angst or dread, as there is no pre-determined \u0027essence\u0027 to guide human life.\n\nThe famous dictum \u0027existence precedes essence\u0027, coined by Jean-Paul Sartre, encapsulates this movement. It argues that humans first exist, encounter themselves, surge up in the world, and define themselves afterwards. Unlike a tool, such as a paperknife, which is designed with a specific purpose in mind, a human being begins as nothing and becomes what they choose to be through their actions.\n\nThis emphasis on radical freedom and personal authenticity has deeply influenced literature, psychology, and theology."
+      },
+      {
+        "versionNumber": 5,
+        "creationDate": "2026-02-28T23:12:37.2723994",
+        "content": "Existentialism is a philosophical inquiry that explores the nature of the human condition, focusing on the experience of the individual as a self-determining agent. It suggests that individuals are entirely free and, therefore, responsible for what they make of themselves. With this responsibility comes a profound sense of angst or dread, as there is no pre-determined \u0027essence\u0027 to guide human life.\n\nThe famous dictum \u0027existence precedes essence\u0027, coined by Jean-Paul Sartre, encapsulates this movement. It argues that humans first exist, encounter themselves, surge up in the world, and define themselves afterwards. Unlike a tool, such as a paperknife, which is designed with a specific purpose in mind, a human being begins as nothing and becomes what they choose to be through their actions.\n\nThis emphasis on radical freedom and personal authenticity has deeply influenced literature, psychology, and theology. Philosophers like Albert Camus added the layer of \u0027The Absurd\u0027, suggesting that while humans naturally search for inherent meaning in life, the universe remains indifferently silent, forcing the individual to create their own meaning."
+      },
+      {
+        "versionNumber": 6,
+        "creationDate": "2026-02-28T23:16:46.65375",
+        "content": "Existentialism is a philosophical inquiry that explores the nature of the human condition, focusing on the experience of the individual as a self-determining agent. It suggests that individuals are entirely free and, therefore, responsible for what they make of themselves. With this responsibility comes a profound sense of angst or dread, as there is no pre-determined \u0027essence\u0027 to guide human life.\n\nThe famous dictum \u0027existence precedes essence\u0027, coined by Jean-Paul Sartre, encapsulates this movement. It argues that humans first exist, encounter themselves, surge up in the world, and define themselves afterwards. Unlike a tool, such as a paperknife, which is designed with a specific purpose in mind, a human being begins as nothing and becomes what they choose to be through their actions.\n\nPhilosophers like Albert Camus added the layer of \u0027The Absurd\u0027, suggesting that while humans naturally search for inherent meaning in life, the universe remains indifferently silent, forcing the individual to create their own meaning."
+      },
+      {
+        "versionNumber": 7,
+        "creationDate": "2026-02-28T23:16:52.4986491",
+        "content": "Existentialism is a philosophical inquiry that explores the nature of the human condition, focusing on the experience of the individual as a self-determining agent. It suggests that individuals are entirely free and, therefore, responsible for what they make of themselves. With this responsibility comes a profound sense of angst or dread, as there is no pre-determined \u0027essence\u0027 to guide human life.\n\nThe famous dictum \u0027existence precedes essence\u0027, coined by Jean-Paul Sartre, encapsulates this movement. It argues that humans first exist, encounter themselves, surge up in the world, and define themselves afterwards. Unlike a tool, such as a paperknife, which is designed with a specific purpose in mind, a human being begins as nothing and becomes what they choose to be through their actions.\n\nThis emphasis on radical freedom and personal authenticity has deeply influenced literature, psychology, and theology. Philosophers like Albert Camus added the layer of \u0027The Absurd\u0027, suggesting that while humans naturally search for inherent meaning in life, the universe remains indifferently silent, forcing the individual to create their own meaning."
       }
     ]
   },
   {
     "documentId": "10",
-    "title": "test",
-    "authorName": "admin",
-    "authorId": 5,
-    "categoryId": 3,
+    "title": "Strategic Decision Making: Game Theory",
+    "authorName": "Melina Kopanou",
+    "authorId": 7,
+    "categoryId": 6,
     "versions": [
       {
         "versionNumber": 1,
-        "creationDate": "2026-02-23T23:47:16.4315779",
-        "content": "ssss"
+        "creationDate": "2026-02-28T22:26:49.4824174",
+        "content": "Game theory is the study of mathematical models of strategic interaction among rational decision-makers. Originally developed to address zero-sum games, in which one person\u0027s gains result in losses for the other participants, it has expanded to include a wide range of behavioral relations and is now an umbrella term for the science of logical decision-making.\n\nA central concept in game theory is the Nash Equilibrium, named after John Nash. It describes a situation where no player can benefit by changing their strategy while the other players keep theirs unchanged. A classic example is the \u0027Prisoner\u0027s Dilemma,\u0027 which illustrates why two completely rational individuals might not cooperate, even if it appears that it is in their best interests to do so."
       },
       {
         "versionNumber": 2,
-        "creationDate": "2026-02-24T00:03:48.30703",
-        "content": "hello"
+        "creationDate": "2026-02-28T22:26:57.6141521",
+        "content": "Game theory is the study of mathematical models of strategic interaction among rational decision-makers. Originally developed to address zero-sum games, in which one person\u0027s gains result in losses for the other participants, it has expanded to include a wide range of behavioral relations and is now an umbrella term for the science of logical decision-making.\n\nA central concept in game theory is the Nash Equilibrium, named after John Nash. It describes a situation where no player can benefit by changing their strategy while the other players keep theirs unchanged. A classic example is the \u0027Prisoner\u0027s Dilemma,\u0027 which illustrates why two completely rational individuals might not cooperate, even if it appears that it is in their best interests to do so.\n\nIn modern economics, game theory is used to understand the behavior of firms in oligopolies, the outcomes of auctions, and the dynamics of international trade negotiations. It provides a rigorous framework for predicting how individuals and organizations will behave when their success depends on the choices of others."
       }
     ]
   },
   {
     "documentId": "11",
-    "title": "kkkk",
-    "authorName": "simple hello",
+    "title": "The Theory of Cognitive Dissonance",
+    "authorName": "Athanasios Papadopoulos",
     "authorId": 5,
-    "categoryId": 1,
+    "categoryId": 5,
     "versions": [
       {
         "versionNumber": 1,
-        "creationDate": "2026-02-28T03:18:55.99301",
-        "content": "kkkk"
+        "creationDate": "2026-02-28T22:28:52.2110542",
+        "content": "Cognitive dissonance is a theory in social psychology proposed by Leon Festinger in 1957. it refers to the mental discomfort experienced by a person who holds two or more contradictory beliefs, ideas, or values. This discomfort is triggered by a situation in which a person\u0027s belief clashes with new evidence or with the person\u0027s behavior.\n\nTo reduce this tension, individuals tend to change either their behavior or their belief to restore consistency. A classic example is smoking: a smoker who knows that the habit is harmful (knowledge) but continues to smoke (behavior) may rationalize their action by saying \u0027smoking helps me relax\u0027 or \u0027I only smoke light cigarettes.\u0027\n\nThis mechanism of self-justification is central to human psychology, influencing everything from consumer choices to political affiliations and social relationships."
+      },
+      {
+        "versionNumber": 2,
+        "creationDate": "2026-02-28T23:27:19.4236065",
+        "content": "Cognitive dissonance is a theory in social psychology proposed by Leon Festinger in 1957. it refers to the mental discomfort experienced by a person who holds two or more contradictory beliefs, ideas, or values. This discomfort is triggered by a situation in which a person\u0027s belief clashes with new evidence or with the person\u0027s behavior.\n\nTo reduce this tension, individuals tend to change either their behavior or their belief to restore consistency. A classic example is smoking: a smoker who knows that the habit is harmful (knowledge) but continues to smoke (behavior) may rationalize their action by saying \u0027smoking helps me relax\u0027 or \u0027I only smoke light cigarettes\u0027.\n\nThis mechanism of self-justification is central to human psychology, influencing everything from consumer choices to political affiliations and social relationships."
       }
     ]
   }

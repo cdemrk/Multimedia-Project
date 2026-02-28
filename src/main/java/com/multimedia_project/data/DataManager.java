@@ -12,15 +12,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.lang.reflect.Type;
 
-
 public class DataManager {
-    private static final String DATA_FOLDER = "medialab"; // όνομα του φακέλου
-       
-    // ονόματα των αρχείων
+    private static final String DATA_FOLDER = "medialab";
+        
     private static final String USERS_FILE = DATA_FOLDER + File.separator + "users.json";
     private static final String DOCUMENTS_FILE = DATA_FOLDER + File.separator + "documents.json";
     private static final String CATEGORIES_FILE = DATA_FOLDER + File.separator + "categories.json";
@@ -32,7 +31,6 @@ public class DataManager {
                                 .create();
 
     public DataManager() {
-        // Δημιουργία φακέλου 'medialab' αν δεν υπάρχει
         try {
             Files.createDirectories(Paths.get(DATA_FOLDER));
         } catch (IOException e) {
@@ -40,41 +38,29 @@ public class DataManager {
         }
     }
 
-    /**
-     * Φορτώνει την κατάσταση του συστήματος από τα JSON αρχεία.
-     * Η μέθοδος αυτή θα καλείται κατά την αρχικοποίηση της εφαρμογής.
-     */
     public void loadState(SystemState state) {
-        // 1. Φόρτωση Χρηστών
+        // Φόρτωση Χρηστών
         List<User> loadedUsers = loadFile(USERS_FILE, TypeTokens.USER_LIST_TYPE);
-        if (loadedUsers.isEmpty() && state.getUserManager().isInitialRun()) {
-            // Αν το αρχείο είναι κενό και είναι η πρώτη εκτέλεση, χρησιμοποιούμε τον προεπιλεγμένο διαχειριστή.
-            // Ο προεπιλεγμένος Admin έχει ήδη προστεθεί στον UserManager κατά την αρχικοποίηση.
-            System.out.println("Users file empty or not found. Using default Admin.");
+        if (loadedUsers.isEmpty()) {
+            System.out.println("Users file empty or not found. Using default Admin logic.");
         } else {
-            // Ανάκτηση των φορτωμένων χρηστών
             state.getUserManager().setUsers(loadedUsers);
         }
 
-        // 2. Φόρτωση Κατηγοριών
+        // Φόρτωση Κατηγοριών
         List<Category> loadedCategories = loadFile(CATEGORIES_FILE, TypeTokens.CATEGORY_LIST_TYPE);
         state.getCategoryManager().setCategories(loadedCategories);
 
-        // 3. Φόρτωση Εγγράφων
+        // Φόρτωση Εγγράφων
         List<Document> loadedDocuments = loadFile(DOCUMENTS_FILE, TypeTokens.DOCUMENT_LIST_TYPE);
         state.getDocumentManager().setDocuments(loadedDocuments);
 
-        // 4. Φόρτωση Παρακολούθησης
+        // Φόρτωση Follows (Εδώ γινόταν το σφάλμα)
         Map<String, List<FollowEntry>> loadedFollows = loadFile(FOLLOWS_FILE, TypeTokens.FOLLOWS_MAP_TYPE);
         state.getFollowManager().setUserFollows(loadedFollows); 
     }
 
-    /**
-     * Αποθηκεύει την κατάσταση του συστήματος στα JSON αρχεία.
-     * Αυτή η μέθοδος καλείται ΑΠΟΚΛΕΙΣΤΙΚΑ πριν τον τερματισμό.
-     */
     public void saveState(SystemState state) {
-        // Αποθήκευση της τρέχουσας κατάστασης (in-memory) πριν τον τερματισμό
         saveFile(USERS_FILE, state.getUserManager().getAllUsers());
         saveFile(CATEGORIES_FILE, state.getCategoryManager().getAllCategories());
         saveFile(DOCUMENTS_FILE, state.getDocumentManager().getAllDocuments());
@@ -82,19 +68,32 @@ public class DataManager {
         System.out.println("System state saved successfully to 'medialab' folder.");
     }
 
-    // -- Private Helper Methods --
-
+    @SuppressWarnings("unchecked")
     private <T> T loadFile(String filePath, Type typeOfT) {
         try (Reader reader = new FileReader(filePath)) {
             T data = gson.fromJson(reader, typeOfT);
-            return (data != null) ? data : (T) Collections.emptyList();
+            if (data != null) return data;
+            return createEmptyInstance(typeOfT);
         } catch (FileNotFoundException e) {
-            System.out.println("File not found: " + filePath);
-            return (T) Collections.emptyList(); // Επιστροφή κενής λίστας αν δεν υπάρχει αρχείο
+            System.out.println("File not found: " + filePath + ". Creating empty structure.");
+            return createEmptyInstance(typeOfT);
         } catch (IOException e) {
             System.err.println("Error reading file " + filePath + ": " + e.getMessage());
-            return (T) Collections.emptyList();
+            return createEmptyInstance(typeOfT);
         }
+    }
+
+    /**
+     * Επιστρέφει μια άδεια λίστα ή ένα άδειο Map ανάλογα με τον τύπο,
+     * ώστε να αποφεύγονται τα ClassCastExceptions.
+     */
+    @SuppressWarnings("unchecked")
+    private <T> T createEmptyInstance(Type typeOfT) {
+        String typeName = typeOfT.getTypeName();
+        if (typeName.contains("Map")) {
+            return (T) new HashMap<String, List<FollowEntry>>();
+        }
+        return (T) Collections.emptyList();
     }
 
     private void saveFile(String filePath, Object data) {

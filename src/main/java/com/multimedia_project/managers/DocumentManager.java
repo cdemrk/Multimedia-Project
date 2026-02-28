@@ -20,24 +20,19 @@ public class DocumentManager {
 
     public Document createDocument(String title, int categoryId, int authorId, String authorName, String content) throws Exception {
         
-        // --- ΠΡΟΣΘΗΚΗ: Έλεγχος για διπλότυπο τίτλο ---
         String cleanTitle = title.trim();
         boolean titleExists = documents.stream().anyMatch(d -> d.getTitle().equalsIgnoreCase(cleanTitle));
         
         if (titleExists) {
             throw new Exception("A document with name '" + cleanTitle + "' already exists!");
         }
-        // ---------------------------------------------
 
-        // 1. Υπολογισμός μέγιστου ID για αποφυγή conflicts
         int maxId = 0;
         for (Document d : documents) {
             try {
-                // Προσπαθούμε να το διαβάσουμε ως σκέτο νούμερο
                 int currentId = Integer.parseInt(d.getDocumentId());
                 if (currentId > maxId) maxId = currentId;
             } catch (NumberFormatException e) {
-                // Αν υπάρχει παλιό format (DOC_X), βγάζουμε το κείμενο και παίρνουμε το νούμερο
                 String cleanId = d.getDocumentId().replace("DOC_", "");
                 try {
                     int currentId = Integer.parseInt(cleanId);
@@ -46,7 +41,6 @@ public class DocumentManager {
             }
         }
 
-        // 2. Το νέο ID είναι το επόμενο νούμερο σε μορφή String
         String newId = String.valueOf(maxId + 1);
         
         Document doc = new Document(newId, cleanTitle, authorId, authorName, categoryId);
@@ -54,11 +48,9 @@ public class DocumentManager {
         DocumentVersion v1 = new DocumentVersion(1, content, LocalDateTime.now());
         doc.getVersions().add(v1);
         
-        // 3. Ασφαλής Προσθήκη
         try {
             documents.add(doc);
         } catch (UnsupportedOperationException e) {
-            // Αν η λίστα είναι "κλειδωμένη" (immutable), την ξεκλειδώνουμε
             documents = new ArrayList<>(documents);
             documents.add(doc);
         }
@@ -108,7 +100,6 @@ public class DocumentManager {
     
     public void setDocuments(List<Document> loadedDocuments) {
         if (loadedDocuments != null) {
-            // Δημιουργούμε νέα λίστα για να είναι σίγουρα mutable
             this.documents = new ArrayList<>(loadedDocuments);
         }
     }
