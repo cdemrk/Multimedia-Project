@@ -39,6 +39,16 @@ public class FollowsController {
         availableDocumentsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         followedDocumentsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
+        // --- ΝΕΟΣ ΚΩΔΙΚΑΣ: ΕΜΦΑΝΙΣΗ ΚΟΥΜΠΙΩΝ ΜΟΝΟ ΟΤΑΝ ΥΠΑΡΧΕΙ ΕΠΙΛΟΓΗ ---
+        availableDocumentsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            addFollowButton.setVisible(newVal != null);
+        });
+
+        followedDocumentsListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            removeFollowButton.setVisible(newVal != null);
+        });
+        // ------------------------------------------------------------------
+
         loadLists();
 
         // 1. Toggle Logic για τα Διαθέσιμα Έγγραφα (Available Documents)
@@ -152,9 +162,13 @@ public class FollowsController {
             mainController.updateSummaryLabels();
         }
         
-        showAlert("Success", "Tracking started for " + selectedDocs.size() + " documents.", Alert.AlertType.INFORMATION);
+        // Αλλαγή μηνύματος: "Following" αντί για "Tracking"
+        showAlert("Success", "Started following " + selectedDocs.size() + " documents.", Alert.AlertType.INFORMATION);
         
         loadLists(); // Ανανέωση των λιστών στο UI
+        
+        // --- ΝΕΟΣ ΚΩΔΙΚΑΣ: Κρύβουμε το κουμπί μετά την ενέργεια ---
+        addFollowButton.setVisible(false);
     }
 
     @FXML
@@ -162,7 +176,7 @@ public class FollowsController {
         ObservableList<FollowEntry> selectedEntries = followedDocumentsListView.getSelectionModel().getSelectedItems();
         
         if (selectedEntries == null || selectedEntries.isEmpty()) {
-            showAlert("Warning", "Please select at least one tracked document to remove.", Alert.AlertType.WARNING);
+            showAlert("Warning", "Please select at least one followed document to unfollow.", Alert.AlertType.WARNING);
             return;
         }
 
@@ -184,10 +198,13 @@ public class FollowsController {
             mainController.updateSummaryLabels();
         }
         
-        // ΠΡΟΣΘΗΚΗ: Το μήνυμα επιβεβαίωσης
-        showAlert("Success", "Stopped tracking for " + count + " documents.", Alert.AlertType.INFORMATION);
+        // Αλλαγή μηνύματος: "Following" αντί για "Tracking"
+        showAlert("Success", "Stopped following " + count + " documents.", Alert.AlertType.INFORMATION);
         
         loadLists(); // Ανανέωση των λιστών στο UI
+        
+        // --- ΝΕΟΣ ΚΩΔΙΚΑΣ: Κρύβουμε το κουμπί μετά την ενέργεια ---
+        removeFollowButton.setVisible(false);
     }
     
     private void showAlert(String title, String message, Alert.AlertType type) {

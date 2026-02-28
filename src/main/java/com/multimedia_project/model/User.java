@@ -13,13 +13,14 @@ public class User {
     private List<Integer> accessCategoryIds;
     
     // Constructor, Getters και Setters
-    public User(String username, String password, String firstName, String lastName, Role role, List<Integer> accessCategoryIds) {
+    public User(int userid, String username, String password, String firstName, String lastName, Role role, List<Integer> accessCategoryIds) {
+        this.userid = userid; // Προσθήκη εδώ
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
-        this.accessCategoryIds = accessCategoryIds;
+        this.accessCategoryIds = (accessCategoryIds != null) ? accessCategoryIds : new ArrayList<>();
     }
 
     public int getId() { return userid; }
@@ -49,5 +50,9 @@ public class User {
             this.accessCategoryIds = new ArrayList<>();
         }
         return this.accessCategoryIds;
+    }
+
+    public void setId(int userid) {
+        this.userid = userid;
     }
 }

@@ -35,11 +35,18 @@ public class MainApp extends Application {
         
         stage.setTitle("MediaLab Document Management - Login");
         
-        // Χειριστής Τερματισμού (όταν ο χρήστης κλείσει το παράθυρο με το 'X')
+        // ΠΡΟΣΘΗΚΗ ΕΙΚΟΝΙΔΙΟΥ ΕΦΑΡΜΟΓΗΣ
+        try {
+            javafx.scene.image.Image icon = new javafx.scene.image.Image(
+                MainApp.class.getResourceAsStream("/com/multimedia_project/icons/app_icon.png")
+            );
+            stage.getIcons().add(icon);
+        } catch (Exception e) {
+            System.err.println("No icon found in path: /com/multimedia_project/icons/app_icon.png");
+        }
+
         stage.setOnCloseRequest(e -> {
-            // Καλούμε το Platform.exit(), το οποίο triggerάρει αυτόματα τη stop()
             Platform.exit();
-            // System.exit(0); // τερματισμός της JVM
         });
 
         // Φόρτωση της αρχικής Login View
@@ -67,7 +74,22 @@ public class MainApp extends Application {
         controller.setSystemState(systemState);
 
         primaryStage.setTitle("Login");
-        primaryStage.setScene(new Scene(root, 400, 300));
+        
+        // ΕΠΑΝΑΦΟΡΑ ΜΕΓΕΘΟΥΣ ΠΑΡΑΘΥΡΟΥ
+        primaryStage.setMaximized(false);
+        primaryStage.setMinWidth(400);
+        primaryStage.setMinHeight(300);
+        primaryStage.setWidth(400);
+        primaryStage.setHeight(350);
+
+        // Δημιουργία της Σκηνής (Scene)
+        Scene scene = new Scene(root, 400, 350);
+        
+        primaryStage.setScene(scene);
+        
+        // Κεντράρισμα του παραθύρου στην οθόνη
+        primaryStage.centerOnScreen();
+        
         primaryStage.show();
     }
 

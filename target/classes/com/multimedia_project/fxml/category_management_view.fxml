@@ -3,46 +3,34 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 
-<VBox spacing="15.0" xmlns="http://javafx.com/javafx/21" 
+<VBox spacing="10.0" xmlns="http://javafx.com/javafx/21" 
       xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="com.multimedia_project.gui.CategoryManagementController">
     <padding>
-        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+        <Insets bottom="15.0" left="15.0" right="15.0" top="10.0" />
     </padding>
 
-    <Label text="Category Management" style="-fx-font-weight: bold;">
-        <font><Font size="16.0" /></font>
-    </Label>
-    <Separator />
-
-    <Label text="Existing Categories:" style="-fx-font-weight: bold;" />
-    <ListView fx:id="categoryListView" VBox.vgrow="ALWAYS" prefHeight="200" />
+    <Region prefHeight="20.0" />
     
-    <Separator />
-
-    <Label text="Update Selected Category Name:" style="-fx-font-weight: bold;" />
-    <GridPane hgap="10" vgap="10">
-        <columnConstraints>
-            <ColumnConstraints halignment="RIGHT" prefWidth="150.0" />
-            <ColumnConstraints hgrow="ALWAYS" prefWidth="200.0" />
-            <ColumnConstraints prefWidth="150.0" />
-        </columnConstraints>
-        
-        <Label text="New Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="currentCategoryNameField" promptText="Enter new category name" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-        <Button fx:id="updateCategoryButton" text="Update Name" onAction="#handleUpdateCategoryName" GridPane.columnIndex="2" GridPane.rowIndex="0" disable="true" />
-    </GridPane>
-    
-    <Button fx:id="deleteCategoryButton" text="Delete Selected Category (and all documents)" onAction="#handleDeleteCategory" style="-fx-base: #d9534f;" disable="true" />
-    
-    <Separator />
-
-    <Label text="Add New Category:" style="-fx-font-weight: bold;" />
-    <HBox spacing="10.0" alignment="CENTER_LEFT">
-        <TextField fx:id="newCategoryNameField" promptText="Enter New Category Name" HBox.hgrow="ALWAYS" />
-        <Button text="Add Category" onAction="#handleAddCategory" style="-fx-base: #5cb85c;" />
+    <HBox spacing="10.0" alignment="CENTER_RIGHT">
+        <Button text="+ New Category" onAction="#handleShowAddCategoryDialog" 
+                style="-fx-base: #5cb85c; -fx-text-fill: white; -fx-font-weight: bold;" />
     </HBox>
-
+    
+    <Label text="System Categories:" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+    <ListView fx:id="categoryListView" VBox.vgrow="ALWAYS" />
+    
+    <HBox spacing="10.0" alignment="CENTER_RIGHT">
+        <padding>
+            <Insets top="5.0" />
+        </padding>
+        
+        <Button fx:id="updateCategoryButton" text="Update Name" onAction="#handleShowUpdateCategoryDialog" 
+                style="-fx-font-weight: bold;" visible="false" />
+                
+        <Button fx:id="deleteCategoryButton" text="Delete Category" onAction="#handleDeleteCategory" 
+                style="-fx-base: #d9534f; -fx-text-fill: white; -fx-font-weight: bold;" 
+                visible="false" />
+    </HBox>
 </VBox>

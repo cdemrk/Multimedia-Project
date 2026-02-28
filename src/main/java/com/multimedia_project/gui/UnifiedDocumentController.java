@@ -10,7 +10,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +23,9 @@ public class UnifiedDocumentController {
     @FXML private ListView<Document> documentListView;
 
     // --- DISPLAY SECTION ---
+    @FXML private VBox placeholderBox;      // Το κεντραρισμένο μήνυμα
+    @FXML private VBox documentDetailsBox;  // Το κουτί με τα πραγματικά δεδομένα
+    
     @FXML private Label detailTitleLabel;
     @FXML private Label detailAuthorLabel;
     @FXML private Label versionInfoLabel;
@@ -51,8 +53,8 @@ public class UnifiedDocumentController {
         loadCategories();
         setupListView();
         
-        // Αρχική αναζήτηση για να γεμίσει η λίστα
         handleSearch();
+        clearDetails(); // Εμφανίζει το ωραίο Empty State στην αρχή!
     }
 
     public void setMainController(MainController mainController) {
@@ -60,22 +62,19 @@ public class UnifiedDocumentController {
     }
 
     private void setupUIByRole() {
-        // Οι απλοί χρήστες δεν βλέπουν καθόλου τα κουμπιά διαχείρισης
         boolean isStaff = loggedInUser.getRole() == Role.Admin || loggedInUser.getRole() == Role.Author;
         newDocumentButton.setVisible(isStaff);
-        editDocumentButton.setVisible(isStaff);
-        deleteDocumentButton.setVisible(isStaff);
-        saveChangesButton.setVisible(false);
+        if (editDocumentButton != null) editDocumentButton.setVisible(isStaff);
+        if (deleteDocumentButton != null) deleteDocumentButton.setVisible(isStaff);
+        if (saveChangesButton != null) saveChangesButton.setVisible(false);
     }
 
     private void loadCategories() {
         List<Category> categories;
         
         if (loggedInUser.getRole() == Role.Admin) {
-            // Ο Admin βλέπει ΤΑ ΠΑΝΤΑ
             categories = systemState.getCategoryManager().getAllCategories();
         } else {
-            // Οι υπόλοιποι βλέπουν μόνο ό,τι τους επιτρέπεται
             categories = systemState.getCategoryManager().getAllCategories().stream()
                     .filter(c -> loggedInUser.canAccessCategory(c.getId()))
                     .collect(Collectors.toList());
@@ -110,9 +109,7 @@ public class UnifiedDocumentController {
 
         List<Document> filtered = systemState.getDocumentManager().getAllDocuments().stream()
                 .filter(doc -> {
-                    // Αν είναι Admin, περνάει πάντα το φίλτρο πρόσβασης
                     if (loggedInUser.getRole() == Role.Admin) return true;
-                    // Αλλιώς, έλεγχος δικαιωμάτων
                     return loggedInUser.canAccessCategory(doc.getCategoryId());
                 })
                 .filter(doc -> selectedCat == null || selectedCat.getId() == 0 || doc.getCategoryId() == selectedCat.getId())
@@ -127,22 +124,23 @@ public class UnifiedDocumentController {
             clearDetails();
             return;
         }
+        
+        // 1. ΕΜΦΑΝΙΣΗ ΤΟΥ ΕΓΓΡΑΦΟΥ & ΑΠΟΚΡΥΨΗ ΤΟΥ PLACEHOLDER
+        if (placeholderBox != null) placeholderBox.setVisible(false);
+        if (documentDetailsBox != null) documentDetailsBox.setVisible(true);
+
         this.selectedDocument = doc;
         this.isEditing = false;
         contentDisplayArea.setEditable(false);
         saveChangesButton.setVisible(false);
 
-        // 1. Βασικές Πληροφορίες
+        // 2. Βασικές Πληροφορίες
         detailTitleLabel.setText(doc.getTitle());
         detailAuthorLabel.setText("Author: " + doc.getAuthorName());
 
-        // 2. Έλεγχος Follow
         updateFollowButtonState();
-
-        // 3. Περιορισμός Versions βάσει Ρόλου
         setupVersionControl(doc);
 
-        // 4. Έλεγχος Δικαιωμάτων Edit/Delete
         boolean canModify = (loggedInUser.getRole() == Role.Admin) || 
                             (loggedInUser.getRole() == Role.Author && loggedInUser.canAccessCategory(doc.getCategoryId()));
         
@@ -157,10 +155,8 @@ public class UnifiedDocumentController {
         List<Integer> allowedNums;
 
         if (loggedInUser.getRole() == Role.Admin) {
-            // Admin: Όλες οι εκδόσεις
             allowedNums = allVers.stream().map(DocumentVersion::getVersionNumber).collect(Collectors.toList());
         } else if (loggedInUser.getRole() == Role.Author) {
-            // Author: Τελευταίες 5
             allowedNums = allVers.stream()
                     .map(DocumentVersion::getVersionNumber)
                     .sorted(Comparator.reverseOrder())
@@ -168,7 +164,6 @@ public class UnifiedDocumentController {
                     .sorted()
                     .collect(Collectors.toList());
         } else {
-            // User: Μόνο η τελευταία
             allowedNums = List.of(doc.getLatestVersion().getVersionNumber());
         }
 
@@ -195,7 +190,6 @@ public class UnifiedDocumentController {
         
         updateFollowButtonState();
 
-        // ΑΥΤΟ ΕΙΝΑΙ ΤΟ ΚΛΕΙΔΙ:
         if (mainController != null) {
             mainController.updateSummaryLabels();
         }
@@ -219,16 +213,13 @@ public class UnifiedDocumentController {
 
     @FXML
     private void handleNewDocument() {
-        // 1. Δημιουργία του Custom Dialog
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Create New Document");
         dialog.setHeaderText("Enter details for the new document");
 
-        // 2. Ορισμός των Buttons (Create και Cancel)
         ButtonType createButtonType = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(createButtonType, ButtonType.CANCEL);
 
-        // 3. Δημιουργία του Layout του διαλόγου (GridPane)
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -237,7 +228,6 @@ public class UnifiedDocumentController {
         TextField titleField = new TextField();
         titleField.setPromptText("Document Title");
         
-        // ΛΟΓΙΚΗ ADMIN: Αν είναι Admin δείξε όλες τις κατηγορίες, αλλιώς μόνο τις επιτρεπόμενες
         List<Category> availableCategories;
         if (loggedInUser.getRole() == Role.Admin) {
             availableCategories = systemState.getCategoryManager().getAllCategories();
@@ -257,7 +247,6 @@ public class UnifiedDocumentController {
         contentArea.setPromptText("Enter document content here...");
         contentArea.setPrefRowCount(10);
 
-        // Τοποθέτηση στοιχείων στο Grid
         grid.add(new Label("Title:"), 0, 0);
         grid.add(titleField, 1, 0);
         grid.add(new Label("Category:"), 0, 1);
@@ -267,7 +256,6 @@ public class UnifiedDocumentController {
 
         dialog.getDialogPane().setContent(grid);
 
-        // 4. Επεξεργασία του αποτελέσματος όταν πατηθεί το "Create"
         Optional<ButtonType> result = dialog.showAndWait();
 
         if (result.isPresent() && result.get() == createButtonType) {
@@ -275,39 +263,36 @@ public class UnifiedDocumentController {
             Category selectedCat = catCombo.getValue();
             String content = contentArea.getText();
 
-            // Έλεγχος εγκυρότητας
             if (title.isEmpty() || selectedCat == null) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Title and Category are required!");
                 alert.showAndWait();
                 return;
             }
 
-            // 5. Κλήση του DocumentManager για τη δημιουργία του εγγράφου
-            Document newDoc = systemState.getDocumentManager().createDocument(
-                title, 
-                selectedCat.getId(), 
-                loggedInUser.getId(), 
-                loggedInUser.getUsername(),
-                content
-            );
+            try {
+                String fullName = loggedInUser.getFirstName() + " " + loggedInUser.getLastName();
 
-            if (newDoc != null) {
-                // Ανανέωση της λίστας εγγράφων στο UI
+                Document newDoc = systemState.getDocumentManager().createDocument(
+                    title, 
+                    selectedCat.getId(), 
+                    loggedInUser.getId(), 
+                    fullName,
+                    content
+                );
+
                 handleSearch(); 
-                
-                // Επιλογή του νέου εγγράφου στη λίστα και προβολή των λεπτομερειών του
                 documentListView.getSelectionModel().select(newDoc);
                 showDocumentDetails(newDoc);
                 
-                // Ενημέρωση των labels στο Main Dashboard
                 if (mainController != null) {
                     mainController.updateSummaryLabels();
                 }
                 
                 Alert success = new Alert(Alert.AlertType.INFORMATION, "Document created successfully!");
                 success.showAndWait();
-            } else {
-                Alert error = new Alert(Alert.AlertType.ERROR, "Failed to create document.");
+
+            } catch (Exception e) {
+                Alert error = new Alert(Alert.AlertType.ERROR, e.getMessage());
                 error.showAndWait();
             }
         }
@@ -324,6 +309,11 @@ public class UnifiedDocumentController {
     @FXML
     private void handleSave() {
         if (systemState.getDocumentManager().modifyDocument(selectedDocument.getDocumentId(), contentDisplayArea.getText())) {
+            int newVersion = selectedDocument.getLatestVersion().getVersionNumber();
+            if (systemState.getFollowManager().isFollowing(loggedInUser.getUsername(), selectedDocument.getDocumentId())) {
+                systemState.getFollowManager().updateFollowVersion(loggedInUser.getUsername(), selectedDocument.getDocumentId(), newVersion);
+            }
+
             showDocumentDetails(selectedDocument);
             new Alert(Alert.AlertType.INFORMATION, "New version created!").show();
         }
@@ -345,11 +335,16 @@ public class UnifiedDocumentController {
     
     private void clearDetails() {
         selectedDocument = null;
-        detailTitleLabel.setText("");
-        detailAuthorLabel.setText("");
-        contentDisplayArea.setText("");
-        versionSelectorCombo.getItems().clear();
-        editDocumentButton.setDisable(true);
-        deleteDocumentButton.setDisable(true);
+        
+        // 1. ΕΜΦΑΝΙΣΗ ΤΟΥ PLACEHOLDER & ΑΠΟΚΡΥΨΗ ΤΟΥ ΕΓΓΡΑΦΟΥ
+        if (placeholderBox != null) placeholderBox.setVisible(true);
+        if (documentDetailsBox != null) documentDetailsBox.setVisible(false);
+        
+        if (detailTitleLabel != null) detailTitleLabel.setText("");
+        if (detailAuthorLabel != null) detailAuthorLabel.setText("");
+        if (contentDisplayArea != null) contentDisplayArea.setText("");
+        if (versionSelectorCombo != null) versionSelectorCombo.getItems().clear();
+        if (editDocumentButton != null) editDocumentButton.setDisable(true);
+        if (deleteDocumentButton != null) deleteDocumentButton.setDisable(true);
     }
 }

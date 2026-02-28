@@ -36,7 +36,7 @@
     ]
   },
   {
-    "userid": 3,
+    "userid": 8,
     "username": "Christina",
     "password": "Pappa",
     "firstName": "simple_user",
@@ -69,7 +69,7 @@
     ]
   },
   {
-    "userid": 0,
+    "userid": 6,
     "username": "efmark",
     "password": "123",
     "firstName": "efthimis",
@@ -81,7 +81,7 @@
     ]
   },
   {
-    "userid": 7,
+    "userid": 9,
     "username": "test",
     "password": "test",
     "firstName": "test",
@@ -89,6 +89,18 @@
     "role": "SimpleUser",
     "accessCategoryIds": [
       3
+    ]
+  },
+  {
+    "userid": 10,
+    "username": "new",
+    "password": "1123",
+    "firstName": "new",
+    "lastName": "new",
+    "role": "Author",
+    "accessCategoryIds": [
+      4,
+      5
     ]
   }
 ]

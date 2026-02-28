@@ -11,37 +11,69 @@ import java.util.stream.Collectors;
 
 public class DocumentManager {
     private List<Document> documents;
-    private int nextDocumentId = 1;
-    private FollowManager followManager; // αναφορά στον FollowManager για διαχείριση διαγραφών
-
+    private FollowManager followManager;
 
     public DocumentManager(FollowManager followManager) {
         this.documents = new ArrayList<>();
         this.followManager = followManager;
     }
 
+    public Document createDocument(String title, int categoryId, int authorId, String authorName, String content) throws Exception {
+        
+        // --- ΠΡΟΣΘΗΚΗ: Έλεγχος για διπλότυπο τίτλο ---
+        String cleanTitle = title.trim();
+        boolean titleExists = documents.stream().anyMatch(d -> d.getTitle().equalsIgnoreCase(cleanTitle));
+        
+        if (titleExists) {
+            throw new Exception("A document with name '" + cleanTitle + "' already exists!");
+        }
+        // ---------------------------------------------
 
-    public Document createDocument(String title, int categoryId, int authorId, String authorName, String content) {
-        String newId = "DOC_" + (documents.size() + 1);
-        Document doc = new Document(newId, title, authorId, authorName, categoryId);
+        // 1. Υπολογισμός μέγιστου ID για αποφυγή conflicts
+        int maxId = 0;
+        for (Document d : documents) {
+            try {
+                // Προσπαθούμε να το διαβάσουμε ως σκέτο νούμερο
+                int currentId = Integer.parseInt(d.getDocumentId());
+                if (currentId > maxId) maxId = currentId;
+            } catch (NumberFormatException e) {
+                // Αν υπάρχει παλιό format (DOC_X), βγάζουμε το κείμενο και παίρνουμε το νούμερο
+                String cleanId = d.getDocumentId().replace("DOC_", "");
+                try {
+                    int currentId = Integer.parseInt(cleanId);
+                    if (currentId > maxId) maxId = currentId;
+                } catch (Exception ex) { /* Ignore invalid formats */ }
+            }
+        }
+
+        // 2. Το νέο ID είναι το επόμενο νούμερο σε μορφή String
+        String newId = String.valueOf(maxId + 1);
+        
+        Document doc = new Document(newId, cleanTitle, authorId, authorName, categoryId);
         
         DocumentVersion v1 = new DocumentVersion(1, content, LocalDateTime.now());
         doc.getVersions().add(v1);
         
-        documents.add(doc);
+        // 3. Ασφαλής Προσθήκη
+        try {
+            documents.add(doc);
+        } catch (UnsupportedOperationException e) {
+            // Αν η λίστα είναι "κλειδωμένη" (immutable), την ξεκλειδώνουμε
+            documents = new ArrayList<>(documents);
+            documents.add(doc);
+        }
+        
         return doc;
     }
 
     public List<Document> searchDocuments(String title, String authorName, Integer categoryId) {
         return documents.stream()
             .filter(d -> title == null || title.isEmpty() || d.getTitle().toLowerCase().contains(title.toLowerCase()))
-            // Εδώ χρησιμοποιούμε το d.getAuthorName() που κράτησες
             .filter(d -> authorName == null || authorName.isEmpty() || d.getAuthorName().toLowerCase().contains(authorName.toLowerCase()))
             .filter(d -> categoryId == null || d.getCategoryId() == categoryId)
             .collect(Collectors.toList());
     }
 
-    // Τροποποίηση εγγράφου (ενσωματώνει Versioning)
     public boolean modifyDocument(String documentId, String newContent) {
         Optional<Document> docOpt = documents.stream()
                 .filter(d -> d.getDocumentId().equals(documentId))
@@ -49,29 +81,20 @@ public class DocumentManager {
         
         if (docOpt.isPresent()) {
             Document doc = docOpt.get();
-            doc.addVersion(newContent); // Αυτό αυξάνει αυτόματα τον αριθμό έκδοσης
-            
-            // **ΣΗΜΑΝΤΙΚΟ:** Κατά την τροποποίηση, ενημερώνουμε τη λογική παρακολούθησης
-            // (αν και η πραγματική ενημέρωση του followEntry.versionAtFollow γίνεται στο login)
-            // Εδώ απλώς έχει καταγραφεί η αλλαγή in-memory.
+            doc.addVersion(newContent); 
             return true;
         }
         return false;
     }
 
-    // Διαγραφή εγγράφου (αφαιρεί όλες τις εκδόσεις)
     public boolean deleteDocument(String documentId) {
         boolean removed = documents.removeIf(d -> d.getDocumentId().equals(documentId));
-        
         if (removed) {
-            // Ενημέρωση του FollowManager για να αφαιρέσει όλες τις παρακολουθήσεις αυτού του εγγράφου
             followManager.removeFollowsForDeletedDocument(documentId);
         }
         return removed;
     }
 
-
-    // Διαγραφή όλων των εγγράφων μιας κατηγορίας (καλείται από CategoryManager)
     public void deleteDocumentsByCategory(int categoryId) {
         List<String> idsToDelete = documents.stream()
             .filter(d -> d.getCategoryId() == categoryId)
@@ -79,23 +102,17 @@ public class DocumentManager {
             .collect(Collectors.toList());
         
         for (String id : idsToDelete) {
-            deleteDocument(id); // Χρησιμοποιούμε τη μέθοδο διαγραφής για να ενημερωθεί ο FollowManager
+            deleteDocument(id);
         }
     }
     
-    // ... Άλλες μέθοδοι: getDocumentById(), getAllDocuments() ...
-
-
-    // Καθορίζει τη λίστα εγγράφων μετά τη φόρτωση του JSON
     public void setDocuments(List<Document> loadedDocuments) {
         if (loadedDocuments != null) {
-            this.documents = loadedDocuments;
-            // Ενημέρωση του nextDocumentId αν χρειάζεται
-            // (Λογική εύρεσης του μέγιστου ID, παρόμοια με CategoryManager)
+            // Δημιουργούμε νέα λίστα για να είναι σίγουρα mutable
+            this.documents = new ArrayList<>(loadedDocuments);
         }
     }
 
-    // Επιστρέφει όλα τα έγγραφα για αποθήκευση στο JSON
     public List<Document> getAllDocuments() {
         return documents;
     }

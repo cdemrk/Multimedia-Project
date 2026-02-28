@@ -1,6 +1,6 @@
 [
   {
-    "documentId": "DOC-101",
+    "documentId": "1",
     "title": "Introduction to JavaFX GUI",
     "authorName": "Despoina Markatou",
     "authorId": 2,
@@ -35,11 +35,31 @@
         "versionNumber": 6,
         "creationDate": "2026-02-18T01:10:56.2996508",
         "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nversion 5"
+      },
+      {
+        "versionNumber": 7,
+        "creationDate": "2026-02-25T02:15:30.8543183",
+        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nversion 7"
+      },
+      {
+        "versionNumber": 8,
+        "creationDate": "2026-02-25T02:34:39.046106",
+        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nversion 8"
+      },
+      {
+        "versionNumber": 9,
+        "creationDate": "2026-02-25T02:35:35.9599234",
+        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nversion 9"
+      },
+      {
+        "versionNumber": 10,
+        "creationDate": "2026-02-25T02:36:24.8666156",
+        "content": "This is the updated text for version 2. The core concepts remain.\n\nParagraph 2: Updated thoughts on JavaFX modules.\n\nversion 10"
       }
     ]
   },
   {
-    "documentId": "DOC-104",
+    "documentId": "2",
     "title": "Advanced Python Tips",
     "authorName": "Despoina Markatou",
     "authorId": 2,
@@ -53,7 +73,7 @@
     ]
   },
   {
-    "documentId": "DOC-105",
+    "documentId": "3",
     "title": "SQL Optimization Guide",
     "authorName": "simple",
     "authorId": 4,
@@ -67,7 +87,7 @@
     ]
   },
   {
-    "documentId": "DOC_6",
+    "documentId": "4",
     "title": "New doc",
     "authorName": "author_user",
     "authorId": 2,
@@ -86,7 +106,7 @@
     ]
   },
   {
-    "documentId": "DOC_7",
+    "documentId": "5",
     "title": "programming",
     "authorName": "author_user",
     "authorId": 2,
@@ -101,6 +121,91 @@
         "versionNumber": 2,
         "creationDate": "2026-02-17T21:18:58.6413865",
         "content": "prog"
+      },
+      {
+        "versionNumber": 3,
+        "creationDate": "2026-02-25T02:35:43.4742551",
+        "content": "prog3"
+      }
+    ]
+  },
+  {
+    "documentId": "6",
+    "title": "test",
+    "authorName": "admin",
+    "authorId": 5,
+    "categoryId": 1,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2026-02-23T23:04:13.124322",
+        "content": "test"
+      },
+      {
+        "versionNumber": 2,
+        "creationDate": "2026-02-25T02:36:31.5207646",
+        "content": "test2"
+      }
+    ]
+  },
+  {
+    "documentId": "8",
+    "title": "eeee",
+    "authorName": "admin",
+    "authorId": 5,
+    "categoryId": 1,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2026-02-23T23:27:50.0634987",
+        "content": "eeeee"
+      }
+    ]
+  },
+  {
+    "documentId": "9",
+    "title": "sssssssss",
+    "authorName": "admin",
+    "authorId": 5,
+    "categoryId": 1,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2026-02-23T23:29:35.9352539",
+        "content": "sssssssssssss"
+      }
+    ]
+  },
+  {
+    "documentId": "10",
+    "title": "test",
+    "authorName": "admin",
+    "authorId": 5,
+    "categoryId": 3,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2026-02-23T23:47:16.4315779",
+        "content": "ssss"
+      },
+      {
+        "versionNumber": 2,
+        "creationDate": "2026-02-24T00:03:48.30703",
+        "content": "hello"
+      }
+    ]
+  },
+  {
+    "documentId": "11",
+    "title": "kkkk",
+    "authorName": "simple hello",
+    "authorId": 5,
+    "categoryId": 1,
+    "versions": [
+      {
+        "versionNumber": 1,
+        "creationDate": "2026-02-28T03:18:55.99301",
+        "content": "kkkk"
       }
     ]
   }

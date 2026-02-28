@@ -99,4 +99,16 @@ public class FollowManager {
         // Χρησιμοποιούμε τη μέθοδο που υπάρχει ήδη και λειτουργεί σωστά με το Map
         removeFollowsForDeletedDocument(documentId);
     }
+
+    public void updateFollowVersion(String username, String documentId, int newVersion) {
+        List<FollowEntry> userFollows = getFollowsForUser(username);
+        if (userFollows != null) {
+            for (FollowEntry entry : userFollows) {
+                if (entry.getDocumentId().equals(documentId)) {
+                    entry.setVersionAtFollow(newVersion);
+                    break;
+                }
+            }
+        }
+    }
 }

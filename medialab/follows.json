@@ -1,38 +1,40 @@
 {
-  "medialab": [
-    {
-      "documentId": "DOC-101",
-      "versionAtFollow": 4
-    }
-  ],
-  "author_user": [
-    {
-      "documentId": "DOC-101",
-      "versionAtFollow": 6
-    }
-  ],
   "simple_user": [
     {
-      "documentId": "DOC-101",
-      "versionAtFollow": 6
+      "documentId": "1",
+      "versionAtFollow": 10
+    },
+    {
+      "documentId": "6",
+      "versionAtFollow": 2
     }
   ],
   "admin": [
     {
-      "documentId": "DOC-101",
-      "versionAtFollow": 6
+      "documentId": "1",
+      "versionAtFollow": 10
     },
     {
-      "documentId": "DOC-104",
-      "versionAtFollow": 1
-    },
-    {
-      "documentId": "DOC-105",
-      "versionAtFollow": 1
-    },
-    {
-      "documentId": "DOC_6",
+      "documentId": "6",
       "versionAtFollow": 2
+    },
+    {
+      "documentId": "5",
+      "versionAtFollow": 3
+    },
+    {
+      "documentId": "8",
+      "versionAtFollow": 1
+    },
+    {
+      "documentId": "10",
+      "versionAtFollow": 2
+    }
+  ],
+  "author_user": [
+    {
+      "documentId": "1",
+      "versionAtFollow": 8
     }
   ]
 }

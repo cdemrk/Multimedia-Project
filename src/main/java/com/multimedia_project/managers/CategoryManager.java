@@ -5,79 +5,97 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 public class CategoryManager {
     private List<Category> categories;
     private DocumentManager documentManager;
-    private int nextCategoryId = 1;
-
 
     public CategoryManager() {
         this.categories = new ArrayList<>();
-        // In-memory initialization logic for testing
-        // You'll load this from JSON in the final app
     }
 
     public void setDocumentManager(DocumentManager documentManager) {
         this.documentManager = documentManager;
     }
 
-    // Προσθήκη νέας κατηγορίας
-    public Category addCategory(String name) {
-        // Έλεγχος για ύπαρξη ονόματος
-        if (categories.stream().anyMatch(c -> c.getName().equalsIgnoreCase(name))) {
-            return null; // Ή πέταγμα εξαίρεσης
+    /**
+     * Προσθέτει μια νέα κατηγορία.
+     * Ελέγχει αν το όνομα υπάρχει ήδη (αγνοώντας κεφαλαία/μικρά) και πετάει Exception αν ναι.
+     */
+    public Category addCategory(String name) throws Exception {
+        String cleanName = name.trim();
+        
+        // 1. Έλεγχος για διπλότυπο όνομα
+        boolean exists = categories.stream().anyMatch(c -> c.getName().equalsIgnoreCase(cleanName));
+        if (exists) {
+            throw new Exception("The category '" + cleanName + "' already exists!");
         }
-        Category newCategory = new Category(nextCategoryId++, name);
+
+        // 2. Υπολογισμός του επόμενου διαθέσιμου ID
+        int nextId = categories.stream()
+                .mapToInt(Category::getId)
+                .max()
+                .orElse(0) + 1;
+
+        // 3. Δημιουργία και προσθήκη
+        Category newCategory = new Category(nextId, cleanName);
         categories.add(newCategory);
+        
         return newCategory;
     }
 
-    // Τροποποίηση ονόματος κατηγορίας
-    public boolean updateCategoryName(int id, String newName) {
+    /**
+     * Τροποποίηση ονόματος υπάρχουσας κατηγορίας.
+     */
+    public boolean updateCategoryName(int id, String newName) throws Exception {
+        String cleanName = newName.trim();
+        
         Optional<Category> categoryOpt = categories.stream()
                 .filter(c -> c.getId() == id)
                 .findFirst();
         
         if (categoryOpt.isPresent()) {
-            // Έλεγχος για διπλό όνομα (αν το νέο όνομα υπάρχει ήδη)
-            if (categories.stream().anyMatch(c -> c.getName().equalsIgnoreCase(newName) && c.getId() != id)) {
-                return false; // Το όνομα υπάρχει
+            // Έλεγχος αν το νέο όνομα υπάρχει ήδη σε ΑΛΛΗ κατηγορία
+            boolean nameExists = categories.stream()
+                    .anyMatch(c -> c.getName().equalsIgnoreCase(cleanName) && c.getId() != id);
+            
+            if (nameExists) {
+                throw new Exception("The category '" + cleanName + "' already exists!");
             }
-            categoryOpt.get().setName(newName);
+
+            categoryOpt.get().setName(cleanName);
             return true;
         }
         return false;
     }
 
+    /**
+     * Διαγραφή κατηγορίας και εκτέλεση Cascade Delete στα έγγραφα.
+     */
     public boolean deleteCategory(int id) {
-        // καλο΄ύμε τον DocumentManager για να διαγράψει όλα τα έγγραφα που ανήκουν σε αυτή την κατηγορία, και στη συνέχεια να γίνει η ενημέρωση στον FollowManager.
-        documentManager.deleteDocumentsByCategory(id);
+        // 1. Διαγραφή όλων των εγγράφων που ανήκουν σε αυτή την κατηγορία
+        if (documentManager != null) {
+            documentManager.deleteDocumentsByCategory(id);
+        }
         
-        // 2. Διαγραφή της κατηγορίας
+        // 2. Διαγραφή της ίδιας της κατηγορίας από τη λίστα
         return categories.removeIf(c -> c.getId() == id);
     }
 
-
-    // Επιστρέφει όλες τις κατηγορίες για αποθήκευση στο JSON
-    public List<Category> getAllCategories() {
-        return categories;
-    }
-
-    // Καθορίζει τη λίστα κατηγοριών μετά τη φόρτωση του JSON
+    /**
+     * Καθορίζει τη λίστα κατηγοριών μετά τη φόρτωση από το JSON.
+     */
     public void setCategories(List<Category> loadedCategories) {
         if (loadedCategories != null) {
-            this.categories = loadedCategories;
-            // Ενημέρωση του nextCategoryId αν χρειάζεται
-            if (!categories.isEmpty()) {
-                // Εύρεση του μέγιστου ID για να συνεχίσουμε σωστά την αρίθμηση
-                this.nextCategoryId = categories.stream()
-                    .mapToInt(Category::getId)
-                    .max().orElse(0) + 1;
-            }
+            // Φροντίζουμε η λίστα να είναι πάντα επεξεργάσιμη (mutable)
+            this.categories = new ArrayList<>(loadedCategories);
+        } else {
+            this.categories = new ArrayList<>();
         }
     }
 
+    public List<Category> getAllCategories() {
+        return categories;
+    }
 
     public String getCategoryNameById(int id) {
         return categories.stream()

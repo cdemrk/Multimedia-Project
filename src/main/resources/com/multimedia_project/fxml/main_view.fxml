@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 <?import javafx.geometry.Insets?>
 
 <BorderPane xmlns="http://javafx.com/javafx/21" 
@@ -18,73 +17,92 @@
         <SplitPane dividerPositions="0.16" focusTraversable="true" BorderPane.alignment="CENTER">
             
             <VBox fx:id="summaryPanel" spacing="15.0" style="-fx-background-color: #f4f4f4;" 
-                  minWidth="160.0" maxWidth="250.0">
+                  minWidth="180.0" maxWidth="250.0">
                 <padding>
-                    <Insets bottom="15.0" left="10.0" right="10.0" top="15.0" />
+                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                 </padding>
                 
-                <Label text="Summary">
-                    <font>
-                        <Font name="System Bold" size="16.0" />
-                    </font>
-                </Label>
+                <Label text="Summary" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
                 
                 <Separator />
                 
                 <VBox spacing="10.0">
                     <HBox alignment="CENTER_LEFT">
-                        <Label text="Categories:" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 12;" />
-                        <Label fx:id="totalCategoriesLabel" text="0" style="-fx-font-weight: bold;" />
+                        <Label text="Categories:" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 13px;" />
+                        <Label fx:id="totalCategoriesLabel" text="0" style="-fx-font-weight: bold; -fx-font-size: 13px;" />
                     </HBox>
                     
                     <HBox alignment="CENTER_LEFT">
-                        <Label text="Documents:" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 12;" />
-                        <Label fx:id="totalDocumentsLabel" text="0" style="-fx-font-weight: bold;" />
+                        <Label text="Documents:" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 13px;" />
+                        <Label fx:id="totalDocumentsLabel" text="0" style="-fx-font-weight: bold; -fx-font-size: 13px;" />
                     </HBox>
                     
                     <HBox alignment="CENTER_LEFT">
-                        <Label text="Following:" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 12;" />
-                        <Label fx:id="userFollowsLabel" text="0" style="-fx-font-weight: bold;" />
+                        <Label text="Following:" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 13px;" />
+                        <Label fx:id="userFollowsLabel" text="0" style="-fx-font-weight: bold; -fx-font-size: 13px;" />
                     </HBox>
                 </VBox>
 
+                <Region prefHeight="15.0" /> 
+                
+                <Label text="User Info" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                
                 <Separator />
                 
-                <VBox spacing="5.0">
-                    <Label text="User Info:" style="-fx-font-size: 10; -fx-text-fill: gray;" />
-                    <Label fx:id="userRoleLabel" text="Role: N/A" style="-fx-font-weight: bold; -fx-font-size: 11;" wrapText="true" />
+                <VBox spacing="10.0">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Username:" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 13px;" />
+                        <Label fx:id="usernameLabel" text="N/A" style="-fx-font-weight: bold; -fx-font-size: 13px;" />
+                    </HBox>
+                    
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="First Name:" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 13px;" />
+                        <Label fx:id="firstNameLabel" text="N/A" style="-fx-font-weight: bold; -fx-font-size: 13px;" />
+                    </HBox>
+                    
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Last Name:" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 13px;" />
+                        <Label fx:id="lastNameLabel" text="N/A" style="-fx-font-weight: bold; -fx-font-size: 13px;" />
+                    </HBox>
+
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Role:" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 13px;" />
+                        <Label fx:id="userRoleLabel" text="N/A" style="-fx-font-weight: bold; -fx-font-size: 13px;" />
+                    </HBox>
                 </VBox>
                 
                 <Region VBox.vgrow="ALWAYS" />
                 
                 <Button maxWidth="Infinity" text="Logout" onAction="#handleLogout" 
-                        style="-fx-background-color: #d9534f; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold;" />
+                        style="-fx-background-color: #d9534f; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold; -fx-padding: 8px;" />
             </VBox>
             
             <VBox fx:id="contentPanel">
-                <TabPane fx:id="mainTabPane" side="TOP" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                <TabPane fx:id="mainTabPane" side="TOP" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" 
+                         tabMinHeight="40.0" tabMinWidth="150.0" 
+                         style="-fx-font-size: 14px; -fx-font-weight: bold;">
                     
                     <Tab text="Documents Explorer">
                         <content>
-                            <VBox fx:id="documentTabContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" />
+                            <VBox fx:id="documentTabContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" style="-fx-background-color: white; -fx-font-weight: normal;" />
                         </content>
                     </Tab>
                     
                     <Tab text="My Follows">
                         <content>
-                            <VBox fx:id="followsTabContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" />
+                            <VBox fx:id="followsTabContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" style="-fx-background-color: white; -fx-font-weight: normal;" />
                         </content>
                     </Tab>
                     
                     <Tab fx:id="userManagementTab" text="User Management">
                         <content>
-                            <VBox fx:id="userTabContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" /> 
+                            <VBox fx:id="userTabContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" style="-fx-background-color: white; -fx-font-weight: normal;" /> 
                         </content>
                     </Tab>
                     
                     <Tab fx:id="categoryManagementTab" text="Category Management">
                         <content>
-                            <VBox fx:id="categoryTabContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" /> 
+                            <VBox fx:id="categoryTabContent" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" style="-fx-background-color: white; -fx-font-weight: normal;" /> 
                         </content>
                     </Tab>
                     

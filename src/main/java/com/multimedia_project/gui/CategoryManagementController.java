@@ -1,54 +1,37 @@
 package com.multimedia_project.gui;
 
-import com.multimedia_project.managers.DocumentManager;
 import com.multimedia_project.managers.SystemState;
-import com.multimedia_project.model.User;
 import com.multimedia_project.model.Category;
+import com.multimedia_project.model.User;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import java.util.Optional;
 
-// ΣΗΜ: Χρειάζεστε αναφορά στον UserManagementController για να καλέσετε loadUserList()
-// Ή, εναλλακτικά, η MainController αναλαμβάνει να ενημερώσει όλα τα views μετά την αλλαγή.
-// Για την απλότητα, θα κάνουμε τη φόρτωση από τον MainController.
-
 public class CategoryManagementController {
     
-    // Μόνο τα πεδία που ανήκουν στη διαχείριση κατηγοριών
-    @FXML private TextField newCategoryNameField;
-    @FXML private TextField currentCategoryNameField;
     @FXML private ListView<Category> categoryListView;
     @FXML private Button updateCategoryButton;
     @FXML private Button deleteCategoryButton;
 
     private SystemState systemState;
-    private User loggedInUser;
     private MainController mainController;
-    private DocumentManager documentManager;
-    
+
     public void initializeData(SystemState state, User user) {
         this.systemState = state;
-        this.loggedInUser = user;
 
         setupCategoryManagement();
         loadCategoryList();
     }
     
     private void setupCategoryManagement() {
-        // Ακρόαση επιλογής κατηγορίας
+        // Ακρόαση επιλογής: Εμφάνιση των κουμπιών Update/Delete ΜΟΝΟ όταν επιλεγεί κάτι
         categoryListView.getSelectionModel().selectedItemProperty().addListener(
             (obs, oldVal, newVal) -> {
-                if (newVal != null) {
-                    currentCategoryNameField.setText(newVal.getName());
-                    updateCategoryButton.setDisable(false);
-                    deleteCategoryButton.setDisable(false);
-                } else {
-                    currentCategoryNameField.setText("");
-                    updateCategoryButton.setDisable(true);
-                    deleteCategoryButton.setDisable(true);
-                }
+                boolean hasSelection = (newVal != null);
+                updateCategoryButton.setVisible(hasSelection);
+                deleteCategoryButton.setVisible(hasSelection);
             }
         );
     }
@@ -57,54 +40,66 @@ public class CategoryManagementController {
         this.mainController = mainController;
     }
 
-    public void setDocumentManager(DocumentManager documentManager) {
-        this.documentManager = documentManager;
-    }
-    
     public void loadCategoryList() {
-        // Καθαρίζουμε και ξαναπαίρνουμε τα δεδομένα από τον Manager
-        categoryListView.setItems(null); 
         categoryListView.setItems(FXCollections.observableArrayList(
             systemState.getCategoryManager().getAllCategories()
         ));
     }
     
     @FXML
-    private void handleAddCategory() {
-        String newName = newCategoryNameField.getText().trim();
-        if (newName.isEmpty()) return;
-        
-        Category newCat = systemState.getCategoryManager().addCategory(newName);
-        
-        if (newCat != null) {
-            showAlert("Success", "Category '" + newName + "' added.", Alert.AlertType.INFORMATION);
-            if (mainController != null) mainController.updateSummaryLabels(); // Ανανέωση summary!
-            newCategoryNameField.clear();
-            loadCategoryList();
-        } else {
-            showAlert("Error", "Category name already exists.", Alert.AlertType.ERROR);
-        }
-    }
+    private void handleShowAddCategoryDialog() {
+        // Χρήση TextInputDialog για γρήγορη εισαγωγή ονόματος
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("New Category");
+        dialog.setHeaderText("Create a new document category");
+        dialog.setContentText("Please enter category name:");
 
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(newName -> {
+            String name = newName.trim();
+            if (name.isEmpty()) return;
+            
+            try {
+                systemState.getCategoryManager().addCategory(name);
+                
+                if (mainController != null) {
+                    mainController.updateSummaryLabels();
+                }
+                
+                loadCategoryList();
+                showAlert("Success", "Category '" + name + "' added.", Alert.AlertType.INFORMATION);
+            } catch (Exception e) {
+                showAlert("Error", e.getMessage(), Alert.AlertType.ERROR);
+            }
+        });
+    }
 
     @FXML
-    private void handleUpdateCategoryName() {
+    private void handleShowUpdateCategoryDialog() {
         Category selectedCategory = categoryListView.getSelectionModel().getSelectedItem();
-        String newName = currentCategoryNameField.getText().trim();
-        
-        if (selectedCategory == null || newName.isEmpty()) return;
-        
-        boolean success = systemState.getCategoryManager().updateCategoryName(selectedCategory.getId(), newName);
-        
-        if (success) {
-            showAlert("Success", "Category name updated to '" + newName + "'.", Alert.AlertType.INFORMATION);
-            loadCategoryList();
-            // Λόγω του update: loadUserList() αν κριθεί απαραίτητο, αν και τα accessCategoryIds δεν αλλάζουν.
-        } else {
-            showAlert("Error", "Category name is already in use.", Alert.AlertType.ERROR);
-        }
-    }
+        if (selectedCategory == null) return;
 
+        // TextInputDialog με προ-συμπληρωμένο το τρέχον όνομα
+        TextInputDialog dialog = new TextInputDialog(selectedCategory.getName());
+        dialog.setTitle("Update Category");
+        dialog.setHeaderText("Rename category: " + selectedCategory.getName());
+        dialog.setContentText("New name:");
+
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(newName -> {
+            String name = newName.trim();
+            if (name.isEmpty() || name.equals(selectedCategory.getName())) return;
+            
+            try {
+                // Χρήση της μεθόδου σου που ελέγχει για διπλότυπα
+                systemState.getCategoryManager().updateCategoryName(selectedCategory.getId(), name);
+                loadCategoryList();
+                showAlert("Success", "Category renamed to '" + name + "'.", Alert.AlertType.INFORMATION);
+            } catch (Exception e) {
+                showAlert("Error", e.getMessage(), Alert.AlertType.ERROR);
+            }
+        });
+    }
 
     @FXML
     private void handleDeleteCategory() {
@@ -119,20 +114,18 @@ public class CategoryManagementController {
             int catId = selectedCategory.getId();
 
             // 1. Αφαίρεση της κατηγορίας από τη λίστα πρόσβασης ΟΛΩΝ των χρηστών
-            // Αυτό διασφαλίζει ότι κανείς δεν θα έχει πλέον δικαίωμα σε μια ανύπαρκτη κατηγορία
             systemState.getUserManager().getAllUsers().forEach(user -> {
                 user.getAccessibleCategoryIds().removeIf(id -> id == catId);
             });
 
             // 2. Διαγραφή των Follows για ΟΛΑ τα έγγραφα αυτής της κατηγορίας
-            // Πρώτα βρίσκουμε ποια έγγραφα ανήκουν εδώ
             systemState.getDocumentManager().getAllDocuments().stream()
                 .filter(doc -> doc.getCategoryId() == catId)
                 .forEach(doc -> {
                     systemState.getFollowManager().removeFollowsForDeletedDocument(doc.getDocumentId());
                 });
 
-            // 3. Διαγραφή της κατηγορίας (και των εγγράφων της) από τον CategoryManager
+            // 3. Διαγραφή της κατηγορίας (και των εγγράφων της) από τον Manager
             systemState.getCategoryManager().deleteCategory(catId);
             
             // 4. Ενημέρωση Summary (Main Dashboard)
@@ -140,14 +133,15 @@ public class CategoryManagementController {
                 mainController.updateSummaryLabels();
             }
             
-            // 5. Ανανέωση Λίστας στο UI
+            // 5. Ανανέωση Λίστας και κρύψιμο κουμπιών
             loadCategoryList(); 
+            updateCategoryButton.setVisible(false);
+            deleteCategoryButton.setVisible(false);
             
-            showAlert("Success", "Category, documents, follows, and user permissions updated successfully.", Alert.AlertType.INFORMATION);
+            showAlert("Success", "Category and all associated data deleted successfully.", Alert.AlertType.INFORMATION);
         }
     }
     
-
     private void showAlert(String title, String message, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);

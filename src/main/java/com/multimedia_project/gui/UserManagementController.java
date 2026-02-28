@@ -7,7 +7,9 @@ import com.multimedia_project.model.Category;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -15,13 +17,6 @@ import java.util.stream.Collectors;
 
 public class UserManagementController {
     
-    // Μόνο τα πεδία που ανήκουν στη διαχείριση χρηστών
-    @FXML private TextField userFirstNameField;
-    @FXML private TextField userLastNameField;
-    @FXML private TextField userUsernameField;
-    @FXML private PasswordField userPasswordField;
-    @FXML private ComboBox<Role> userRoleCombo;
-    @FXML private ListView<Category> accessCategoriesListView;
     @FXML private Button deleteUserButton;
     @FXML private ListView<User> userListView;
 
@@ -32,127 +27,106 @@ public class UserManagementController {
         this.systemState = state;
         this.loggedInUser = user;
 
-        // Ρύθμιση και φόρτωση
-        setupUserManagement();
+        setupListView();
         loadUserList();
     }
     
-    private void setupUserManagement() {
-        // 1. Ρύθμιση ComboBox Ρόλου
-        userRoleCombo.setItems(FXCollections.observableArrayList(Arrays.asList(Role.SimpleUser, Role.Author, Role.Admin)));
-        userRoleCombo.getSelectionModel().selectFirst();
-        
-        // 2. Ενεργοποίηση Πολλαπλής Επιλογής (ΑΠΑΡΑΙΤΗΤΟ)
-        accessCategoriesListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        
-        // 3. CUSTOM LOGIC: Ενεργοποίηση πολλαπλής επιλογής με απλό κλικ (Toggle)
-        accessCategoriesListView.setCellFactory(lv -> {
-            ListCell<Category> cell = new ListCell<Category>() {
-                @Override
-                protected void updateItem(Category item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        setText(item.getName());
-                    }
-                }
-            };
-
-            // Χρησιμοποιούμε Event Filter στο MOUSE_PRESSED για να "κλέψουμε" το κλικ 
-            // πριν η JavaFX εκτελέσει τη δική της λογική επιλογής.
-            cell.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
-                if (!cell.isEmpty()) {
-                    // Δίνουμε focus στη λίστα χειροκίνητα
-                    accessCategoriesListView.requestFocus();
-                    
-                    int index = cell.getIndex();
-                    SelectionModel<Category> model = accessCategoriesListView.getSelectionModel();
-                    
-                    if (model.isSelected(index)) {
-                        model.clearSelection(index);
-                    } else {
-                        model.select(index);
-                    }
-                    
-                    // Καταναλώνουμε το event για να μην τρέξει η default επιλογή της JavaFX
-                    event.consume(); 
-                }
-            });
-            return cell;
+    private void setupListView() {
+        // Ακρόαση για εμφάνιση/απόκρυψη του Delete
+        userListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            deleteUserButton.setVisible(newVal != null);
         });
-
-        // 4. Ακρόαση επιλογής χρήστη από την πάνω λίστα (για να γεμίσουμε τη φόρμα)
-        userListView.getSelectionModel().selectedItemProperty().addListener(
-            (obs, oldVal, newVal) -> populateUserFields(newVal)
-        );
     }
 
-    
     public void loadUserList() {
-        // Εμφανίζουμε όλους τους χρήστες εκτός από τον τρέχοντα συνδεδεμένο Admin
         List<User> userList = systemState.getUserManager().getAllUsers().stream()
             .filter(u -> !u.getUsername().equals(loggedInUser.getUsername()))
             .collect(Collectors.toList());
             
         userListView.setItems(FXCollections.observableArrayList(userList));
-        
-        // Γέμισμα της λίστας κατηγοριών πρόσβασης
-        accessCategoriesListView.setItems(FXCollections.observableArrayList(
-            systemState.getCategoryManager().getAllCategories()
-        ));
     }
 
-    
-    private void populateUserFields(User user) {
-        if (user == null) {
-            // ... καθαρισμός πεδίων ...
-            return;
-        }
-        // Εμφάνιση των στοιχείων του επιλεγμένου χρήστη
-        userFirstNameField.setText(user.getFirstName());
-        userLastNameField.setText(user.getLastName());
-        userUsernameField.setText(user.getUsername());
-        userRoleCombo.getSelectionModel().select(user.getRole());
-        
-        // Επιλογή των κατηγοριών στις οποίες έχει πρόσβαση
-        accessCategoriesListView.getSelectionModel().clearSelection();
-        for (Category cat : accessCategoriesListView.getItems()) {
-            if (user.canAccessCategory(cat.getId())) {
-                accessCategoriesListView.getSelectionModel().select(cat);
-            }
-        }
-    }
-
-    
     @FXML
-    private void handleAddUser() {
-        try {
-            // Συγκέντρωση δεδομένων
-            String firstName = userFirstNameField.getText();
-            String lastName = userLastNameField.getText();
-            String username = userUsernameField.getText();
-            String password = userPasswordField.getText();
-            Role role = userRoleCombo.getSelectionModel().getSelectedItem();
-            
-            List<Integer> accessIds = accessCategoriesListView.getSelectionModel().getSelectedItems().stream()
-                .map(Category::getId)
-                .collect(Collectors.toList());
+    private void handleShowAddUserDialog() {
+        // 1. Δημιουργία του Dialog
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Create New User");
+        dialog.setHeaderText("Fill in the details for the new user account.");
+
+        // 2. Ορισμός Buttons
+        ButtonType createButtonType = new ButtonType("Create User", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(createButtonType, ButtonType.CANCEL);
+
+        // 3. Κατασκευή του Layout του παραθύρου
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField fName = new TextField(); fName.setPromptText("First Name");
+        TextField lName = new TextField(); lName.setPromptText("Last Name");
+        TextField uName = new TextField(); uName.setPromptText("Username (Required)");
+        PasswordField pWord = new PasswordField(); pWord.setPromptText("Password (Required)");
+        
+        ComboBox<Role> roleCombo = new ComboBox<>(FXCollections.observableArrayList(Arrays.asList(Role.SimpleUser, Role.Author, Role.Admin)));
+        roleCombo.getSelectionModel().selectFirst();
+
+        // Λίστα κατηγοριών με Toggle Logic
+        ListView<Category> catList = new ListView<>(FXCollections.observableArrayList(systemState.getCategoryManager().getAllCategories()));
+        catList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        catList.setPrefHeight(150);
+        
+        // Custom cell factory για toggle επιλογή κατηγοριών χωρίς Ctrl
+        catList.setCellFactory(lv -> {
+            ListCell<Category> cell = new ListCell<Category>() {
+                @Override protected void updateItem(Category item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item.getName());
+                }
+            };
+            cell.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, event -> {
+                if (!cell.isEmpty()) {
+                    catList.requestFocus();
+                    int index = cell.getIndex();
+                    if (catList.getSelectionModel().isSelected(index)) catList.getSelectionModel().clearSelection(index);
+                    else catList.getSelectionModel().select(index);
+                    event.consume();
+                }
+            });
+            return cell;
+        });
+
+        grid.add(new Label("First Name:"), 0, 0); grid.add(fName, 1, 0);
+        grid.add(new Label("Last Name:"), 0, 1);  grid.add(lName, 1, 1);
+        grid.add(new Label("Username:"), 0, 2);   grid.add(uName, 1, 2);
+        grid.add(new Label("Password:"), 0, 3);   grid.add(pWord, 1, 3);
+        grid.add(new Label("User Role:"), 0, 4);  grid.add(roleCombo, 1, 4);
+        grid.add(new Label("Access Categories:"), 0, 5); grid.add(catList, 1, 5);
+
+        dialog.getDialogPane().setContent(grid);
+
+        // 4. Επεξεργασία αποτελέσματος
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == createButtonType) {
+            try {
+                String username = uName.getText().trim();
+                String password = pWord.getText();
                 
-            // ΕΛΕΓΧΟΣ (βασικοί έλεγχοι: κενά πεδία, τουλάχιστον μια κατηγορία πρόσβασης)
-            if (username.isEmpty() || password.isEmpty() || accessIds.isEmpty()) {
-                showAlert("Error", "Username, Password, and at least one Access Category are required.", Alert.AlertType.ERROR);
-                return;
+                List<Integer> accessIds = catList.getSelectionModel().getSelectedItems().stream()
+                    .map(Category::getId)
+                    .collect(Collectors.toList());
+
+                if (username.isEmpty() || password.isEmpty() || accessIds.isEmpty()) {
+                    showAlert("Validation Error", "Username, Password and at least one category are required.", Alert.AlertType.ERROR);
+                    return;
+                }
+
+                systemState.getUserManager().addUser(username, password, fName.getText(), lName.getText(), roleCombo.getValue(), accessIds);
+                loadUserList();
+                showAlert("Success", "User " + username + " created successfully.", Alert.AlertType.INFORMATION);
+            } catch (Exception e) {
+                showAlert("Error", "Failed to add user: " + e.getMessage(), Alert.AlertType.ERROR);
             }
-            
-            // Κλήση Manager για προσθήκη χρήστη
-            systemState.getUserManager().addUser(username, password, firstName, lastName, role, accessIds);
-            showAlert("Success", "User " + username + " added successfully.", Alert.AlertType.INFORMATION);
-            
-            loadUserList(); // Ανανέωση λίστας
-            
-        } catch (Exception e) {
-            showAlert("Error", "Failed to add user: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
     
@@ -166,10 +140,10 @@ public class UserManagementController {
             ButtonType.YES, ButtonType.NO);
         
         if (confirm.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
-            // Κλήση Manager για διαγραφή
             systemState.getUserManager().deleteUser(userToDelete.getUsername()); 
+            loadUserList();
+            deleteUserButton.setVisible(false);
             showAlert("Success", "User deleted successfully.", Alert.AlertType.INFORMATION);
-            loadUserList(); // Ανανέωση λίστας
         }
     }
     

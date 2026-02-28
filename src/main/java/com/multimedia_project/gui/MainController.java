@@ -23,6 +23,10 @@ public class MainController {
     @FXML private Label totalCategoriesLabel;
     @FXML private Label totalDocumentsLabel;
     @FXML private Label userFollowsLabel;
+
+    @FXML private Label usernameLabel;
+    @FXML private Label firstNameLabel;
+    @FXML private Label lastNameLabel;
     @FXML private Label userRoleLabel;
     
     @FXML private VBox documentTabContent;
@@ -43,7 +47,12 @@ public class MainController {
         this.systemState = state;
         this.loggedInUser = user;
 
-        userRoleLabel.setText("Role: " + user.getRole().toString());
+        // --- Ενημέρωση των νέων πεδίων του χρήστη ---
+        usernameLabel.setText(user.getUsername());
+        firstNameLabel.setText(user.getFirstName());
+        lastNameLabel.setText(user.getLastName());
+        userRoleLabel.setText(user.getRole().toString());
+        // ---------------------------------------------
 
         // 1. Έλεγχος δικαιωμάτων για τα Tabs
         if (user.getRole() != Role.Admin) {
@@ -81,7 +90,7 @@ public class MainController {
 
     private void loadUnifiedDocumentView() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/multimedia_project/fxml/UnifiedDocumentView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/multimedia_project/fxml/unified_document_view.fxml"));
             Node node = loader.load();
             unifiedDocumentController = loader.getController(); // Αποθήκευση αναφοράς
             unifiedDocumentController.initializeData(systemState, loggedInUser);
