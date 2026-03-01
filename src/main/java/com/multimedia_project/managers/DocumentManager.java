@@ -27,7 +27,7 @@ public class DocumentManager {
     }
 
     /**
-     * Δημιουργεί ένα νέο έγγραφο στο σύστημα και αρχικοποιεί την πρώτη του έκδοση (V1).
+     * Δημιουργεί ένα νέο έγγραφο στο σύστημα και αρχικοποιεί την πρώτη του έκδοση.
      * @param title      Ο τίτλος του εγγράφου.
      * @param categoryId Το ID της κατηγορίας στην οποία ανήκει.
      * @param authorId   Το ID του συγγραφέα.
@@ -79,7 +79,7 @@ public class DocumentManager {
     /**
      * Αναζητά έγγραφα με βάση πολλαπλά κριτήρια φιλτραρίσματος.
      * @param title      Τμήμα ή ολόκληρος ο τίτλος προς αναζήτηση.
-     * @param authorName Το όνομα του συγγραφέα.
+     * @param authorName Τμήμα ή ολόκληρο το όνομα του συγγραφέα.
      * @param categoryId Το ID της κατηγορίας.
      * @return Μια λίστα με τα έγγραφα που πληρούν τα κριτήρια.
      */
@@ -95,7 +95,7 @@ public class DocumentManager {
      * Τροποποιεί ένα υπάρχον έγγραφο προσθέτοντας μια νέα έκδοση με ενημερωμένο περιεχόμενο.
      * @param documentId Το ID του εγγράφου προς τροποποίηση.
      * @param newContent Το νέο περιεχόμενο του εγγράφου.
-     * @return true αν η τροποποίηση πέτυχε, false αν το έγγραφο δεν βρέθηκε.
+     * @return True αν η τροποποίηση πέτυχε, False αν το έγγραφο δεν βρέθηκε.
      */
     public boolean modifyDocument(String documentId, String newContent) {
         Optional<Document> docOpt = documents.stream()
@@ -111,9 +111,9 @@ public class DocumentManager {
     }
 
     /**
-     * Διαγράφει ένα έγγραφο από το σύστημα και αφαιρεί όλες τις σχετικές ακολουθήσεις (follows).
+     * Διαγράφει ένα έγγραφο από το σύστημα και αφαιρεί όλες τις σχετικές παρακολουθήσεις (follows).
      * @param documentId Το μοναδικό ID του εγγράφου προς διαγραφή.
-     * @return true αν η διαγραφή ολοκληρώθηκε, false αν το έγγραφο δεν υπήρχε.
+     * @return True αν η διαγραφή ολοκληρώθηκε, False αν το έγγραφο δεν υπήρχε.
      */
     public boolean deleteDocument(String documentId) {
         boolean removed = documents.removeIf(d -> d.getDocumentId().equals(documentId));
@@ -139,7 +139,7 @@ public class DocumentManager {
     }
     
     /**
-     * Ενημερώνει τη λίστα των εγγράφων με δεδομένα από εξωτερική πηγή (π.χ. φόρτωση από JSON).
+     * Ενημερώνει τη λίστα των εγγράφων με δεδομένα από εξωτερική πηγή (JSON).
      * @param loadedDocuments Η νέα λίστα εγγράφων.
      */
     public void setDocuments(List<Document> loadedDocuments) {
