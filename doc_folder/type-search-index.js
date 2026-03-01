@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"com.multimedia_project.managers","l":"DocumentManager"}];updateSearchResults();
