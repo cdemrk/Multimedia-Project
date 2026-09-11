@@ -40,6 +40,7 @@ The application can be executed via the terminal from the root folder of the pro
 
 ```bash
 mvnd javafx:run
+```
 
 ------------------------------------------------------------------------------------------
 
